@@ -2,69 +2,69 @@
 <script src="/javascripts/new-response.js"></script>
 
 <div class="container">
-  <div class="panel panel-default">
-    <div class="panel-heading"><h4>New discussion</h4></div>
-    <div class="panel-body" id="newDiscussionPanel">
-    <form method="POST" action="/discussions" id="newDiscussionForm">
-      <div class="form-group row">
-       <label for="responseTitle" class="col-sm-2 col-form-label">Title*</label>
-          <div class="col-sm-10">
-            <div id="suggestedTitles">
-              <input class="typeahead form-control" type="text" id="newResponseTitle" style="width:100%" name="responseTitle">
-            </div>
-          </div>
-        </div>
+	<div class="panel panel-default">
+		<div class="panel-heading"><h4>New discussion</h4></div>
+		<div class="panel-body" id="newDiscussionPanel">
+		<form method="POST" action="/discussions" id="newDiscussionForm">
+			<div class="form-group row">
+			 <label for="responseTitle" class="col-sm-2 col-form-label">Title*</label>
+				<div class="col-sm-10">
+					<div id="suggestedTitles">
+						<input class="typeahead form-control" type="text" id="newResponseTitle" style="width:100%" name="responseTitle">
+					</div>
+				</div>
+			</div>
 
-        <div class="form-group row">
-          <label for="responseText" class="col-sm-2 col-form-label">Text*</label>
-          <textarea class="form-control" id="responseText" name="responseText" rows="10" style="resize: none;"></textarea>
-        </div>
+				<div class="form-group row">
+					<label for="responseText" class="col-sm-2 col-form-label">Text*</label>
+					<textarea class="form-control" id="responseText" name="responseText" rows="10" style="resize: none;"></textarea>
+				</div>
 
-      <fieldset class="form-group row">
+			<fieldset class="form-group row">
 
-        <div class="form-group row">
-          <label for="tagsTitle" class="col-sm-2 col-form-label">Tags*</label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control" id="tagsTitle" name="tags">
-             <p id="tagsHelp" class="form-text text-muted">
-          Seperate tags by spaces.
-          </p>
-          </div>
-        </div>
+				<div class="form-group row">
+					<label for="tagsTitle" class="col-sm-2 col-form-label">Tags*</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="tagsTitle" name="tags">
+						 <p id="tagsHelp" class="form-text text-muted">
+					Seperate tags by spaces.
+					</p>
+					</div>
+				</div>
 
 
-        <legend class="col-form-legend col-sm-2">Visibility</legend>
-        <div class="col-sm-10">
-          
-          <div class="form-check">
-            <label class="form-check-label">
-              <input class="form-check-input" type="radio" name="visibility" id="public" value="public" checked>
-              Public
-            </label>
-            <p id="publicHelp" class="form-text text-muted">
-          Anyone will be able to see your argument and make comments, but only those you invite will be able to make official responses.
-        </p>
-          </div>
+				<legend class="col-form-legend col-sm-2">Visibility</legend>
+				<div class="col-sm-10">
+					
+					<div class="form-check">
+						<label class="form-check-label">
+							<input class="form-check-input" type="radio" name="visibility" id="public" value="public" checked>
+							Public
+						</label>
+						<p id="publicHelp" class="form-text text-muted">
+					Anyone will be able to see your argument and make comments, but only those you invite will be able to make official responses.
+				</p>
+					</div>
 
-          <div class="form-check">
-            <label class="form-check-label">
-              <input class="form-check-input" type="radio" name="visibility" id="private" value="private">
-              Private
-            </label>
-            <p id="publicHelp" class="form-text text-muted">
-          Only you and the people you invite will be able to see, comment, and make official responses.
-         </p>
-          </div>
+					<div class="form-check">
+						<label class="form-check-label">
+							<input class="form-check-input" type="radio" name="visibility" id="private" value="private">
+							Private
+						</label>
+						<p id="publicHelp" class="form-text text-muted">
+					Only you and the people you invite will be able to see, comment, and make official responses.
+				 </p>
+					</div>
 
-        </div>
-      </fieldset>
-      
-      <div class="form-group row">
-        <div class="offset-sm-2 col-sm-10">
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-      </div>
-    </div>
-    </form>
-  </div>
+				</div>
+			</fieldset>
+			
+			<div class="form-group row">
+				<div class="offset-sm-2 col-sm-10">
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</div>
+			</div>
+		</div>
+		</form>
+	</div>
 </div>

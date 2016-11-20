@@ -8,5 +8,6 @@ module.exports = mongoose.model('Discussion', new Schema({
 	public: Boolean,
 	responses: [Schema.Types.Object],
 	citations: [Schema.Types.Object],
-	relationships: [Schema.Types.Object]
+	relationships: [Schema.Types.Object],
+	participants: [Schema.Types.Object]
 }));

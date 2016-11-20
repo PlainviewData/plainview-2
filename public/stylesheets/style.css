@@ -245,13 +245,6 @@ font-family: 'Open Sans', sans-serif;
     margin: 0;
 }
 
-.modal.modal-wide .modal-dialog {
-  width: 66%;
-}
-.modal-wide .modal-body {
-  overflow-y: auto;
-}
-
 body {
   padding-top: 70px;
 }
@@ -259,4 +252,13 @@ body {
 #responses {
   height: 400px; 
   overflow: auto;
+}
+
+.centered-form{
+  margin-top: 60px;
+}
+
+.centered-form .panel{
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;
 }

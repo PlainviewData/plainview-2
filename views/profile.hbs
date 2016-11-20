@@ -1,0 +1,9 @@
+<div class="container">
+	<h1>{{user.first_name}} {{user.last_name}}</h1>	
+	<ul>
+		Responses
+		{{#each responses}}
+				<li><a href="/discussions/id/{{this.original_discussion}}">{{this.title}}</a></li>
+		{{/each}}
+	</ul>
+</div>

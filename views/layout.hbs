@@ -1,48 +1,120 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Plainview</title>
-     <link rel='stylesheet' href='/stylesheets/bootstrap.css' />
-      <link rel='stylesheet' href='/stylesheets/style.css' />
-      <link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">     <script src="/javascripts/jquery-3.1.1.js"></script>
-     <script src="/javascripts/typeahead.bundle.js"></script>
-     <script src="/javascripts/bootstrap.js"></script>
-     <script src="/javascripts/matchedTitlesBloodhound.js"></script>
-     <script src="/javascripts/utils.js"></script>
-     <script src="/javascripts/clipboard.js-master/dist/clipboard.js"></script>
-  </head>
-  <body>
-  <nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar1">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/"><img id="logo" src="/images/logo.png"></a>
-      </div>
-      <div id="navbar1" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav">
-          <li class="active">
-            <form class="navbar-form navbar-left">
-              <div class="form-group">
-                <input type="text" action="/responses" class="form-control" style="height:30px;" placeholder="Search Plainview">
-              </div>
-            </form>
-          </li>
-        </ul>
-         <ul class="nav navbar-nav navbar-right">
-             <li data-toggle="tooltip" data-placement="bottom" title="New Discussion"><a href="/discussions/new"><span class="glyphicon glyphicon-plus"></a></li>
-             <li data-toggle="tooltip" data-placement="bottom" title="Your Profile"><a href="#"><span class="glyphicon glyphicon-user"></a></li>
-          <li><a href="/about">about</a></li>
-        </ul>
-      </div>
-      <!--/.nav-collapse -->
-    </div>
-    <!--/.container-fluid -->
-  </nav>
-    {{{body}}}
-  </body>
+	<head>
+		<title>Plainview</title>
+		<link rel='stylesheet' href='/stylesheets/bootstrap.css' />
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">     <script src="/javascripts/jquery-3.1.1.js"></script>
+		<script src="/javascripts/typeahead.bundle.js"></script>
+		<script src="/javascripts/bootstrap.js"></script>
+		<script src="/javascripts/matchedTitlesBloodhound.js"></script>
+		<script src="/javascripts/utils.js"></script>
+		<script src="/javascripts/clipboard.js-master/dist/clipboard.js"></script>
+	</head>
+	<body>
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar1">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/"><img id="logo" src="/images/logo.png"></a>
+			</div>
+			<div id="navbar1" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li class="active">
+						<form class="navbar-form navbar-left">
+							<div class="form-group">
+								<input type="text" action="/responses" class="form-control" style="height:30px;" placeholder="Search Plainview">
+							</div>
+						</form>
+					</li>
+				</ul>
+				 <ul class="nav navbar-nav navbar-right">
+						{{#if user}}
+							<li data-toggle="tooltip" data-placement="bottom" title="New Discussion"><a href="/discussions/new"><span class="glyphicon glyphicon-plus"></a></li>
+							<li data-toggle="tooltip" data-placement="bottom" title="Your Profile"><a href="/profile"><span class="glyphicon glyphicon-user"></a></li>
+							<li><a href="/logout">logout</a></li>
+						{{else}}
+							<li><a href="#" id="loginRegister" data-toggle="modal" data-target="#loginModal">login</a></li>
+							<li><a href="#" id="loginRegister" data-toggle="modal" data-target="#registerModal">register</a></li>
+						{{/if}}
+						<!-- <li><a href="/about">about</a></li> -->
+				</ul>
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+		<!--/.container-fluid -->
+	</nav>
+		{{{body}}}
+		<div id="loginModal" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title">Login</h4>
+					</div>
+					<div class="modal-body">
+						<form action="/login" id="loginForm" method="POST">
+							<div class="form-group row">
+								 <label for="username" class="col-sm-2 col-form-label">Email</label>
+								<div class="col-sm-7">
+									<input type="text" id="username" style="width:100%" name="username">
+								</div>
+							</div>
+							<div class="form-group row">
+								<label for="password" class="col-sm-2 col-form-label">Password</label>
+								<div class="col-sm-7">
+									<input type="password" id="password" style="width:100%" name="password">
+								</div>
+							</div>
+							<button type="submit" class="btn btn-primary">Login</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="registerModal" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title">Register</h4>
+					</div>
+					<div class="modal-body">
+						<form action="/register" id="registerForm" method="POST">
+							<div class="form-group row">
+								<label for="firstName" class="col-sm-2 col-form-label">First name</label>
+								<div class="col-sm-7">
+									<input type="text" id="firstName" style="width:100%" name="firstName">
+								</div>
+							</div>
+							<div class="form-group row">
+								<label for="lastName" class="col-sm-2 col-form-label">Last name</label>
+								<div class="col-sm-7">
+									<input type="text" id="lastName" style="width:100%" name="lastName">
+								</div>
+							</div>
+							<div class="form-group row">
+								<label for="username" class="col-sm-2 col-form-label">Email</label>
+								<div class="col-sm-7">
+									<input type="email" name="username" id="username" tabindex="1" class="form-control" placeholder="Email Address" value="">
+								</div>
+							</div>
+							<div class="form-group row">
+								<label for="password" class="col-sm-2 col-form-label">Password</label>
+								<div class="col-sm-7">
+									<input type="password" id="password" style="width:100%" name="password">
+								</div>
+							</div>
+							<button type="submit" class="btn btn-primary">Register</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>
