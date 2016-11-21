@@ -8,13 +8,19 @@ var responseTitle = require('../models/responseTitle');
 var Account = require('../models/account');
 
 router.post('/', function(req, res, next) {
+	var signature = "";
+	if (req.user){
+		signature = req.user.first_name + " " + req.user.last_name;
+	} else {
+		signature = "Demo User";
+	}
 	var currentDiscussionId = req.body.discussionId;
 	var newResponse;
 	newResponse = new Response({
 			original_discussion: currentDiscussionId,
 			title: req.body.responseTitle,
 			text: req.body.responseText,
-			created_by: req.user.first_name + " " + req.user.last_name,
+			created_by: signature,
 		});
 	newResponse.save(function(err, savedResponse){
 		var relationship = {}
@@ -24,20 +30,28 @@ router.post('/', function(req, res, next) {
 			{$push: {"responses": savedResponse.id, "relationships": relationship }},
 			{safe: true, upsert: true},
 			function (err, foundDiscussion) {
-				if (req.apiQuery){
-					res.redirect('api/discussions/id/' + currentDiscussionId);
+				if (err){
+					res.send("error");
 				} else {
-					if (discussionClients[currentDiscussionId] !== undefined){
-						discussionClients[currentDiscussionId].forEach(function(clientId){
-								io.to(clientId).emit('newOriginalResponse', {discussionId: currentDiscussionId, newResponse: newResponse, relatedResponse: req.body.relatedResponse});
-						})
+					if (req.apiQuery){
+						res.redirect('api/discussions/id/' + currentDiscussionId);
+					} else {
+						if (discussionClients[currentDiscussionId] !== undefined){
+							discussionClients[currentDiscussionId].forEach(function(clientId){
+									io.to(clientId).emit('newOriginalResponse', {discussionId: currentDiscussionId, newResponse: newResponse, relatedResponse: req.body.relatedResponse});
+							})
+						}
+						res.send('OK')
 					}
-					res.send('OK')
 				}
-			});
-		});
-	Account.findByIdAndUpdate(req.user._id,
-		{$push: {'responses': savedResponse.id}})
+			}
+		);
+	});
+
+	if (req.user){
+		Account.findByIdAndUpdate(req.user._id,
+			{$push: {'responses': savedResponse.id}})
+	}
 	
 	responseTitle.find({title: req.body.responseTitle}, function(err, foundResponse, num){
 		if (foundResponse.length === 0){
@@ -69,10 +83,6 @@ router.get('/featured', function(req, res, next) {
 			res.render('responses', {responses: foundResponses, user: req.user});
 		}
 	})
-});
-
-router.get('/new', function(req, res, next) {
-	res.render('new-response', {});
 });
 
 router.get('/id/:response_id([0-9a-f]{24})', function(req, res, next) {

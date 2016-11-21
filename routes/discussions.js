@@ -16,7 +16,6 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/new', function(req, res, next) {
-	console.log(req.user);
 	if (req.user){
 		res.render('new-discussion', {user: req.user});
 	} else {
@@ -28,15 +27,35 @@ router.get('/id/:discussion_id([0-9a-f]{24})', function(req, res, next) {
 	var discussionId = mongoose.Types.ObjectId(req.params.discussion_id.toString());
 	Discussion.findById(discussionId, function (err, foundDiscussion) {
 		if (foundDiscussion) {
-		Response.find({
-				'_id': { $in: foundDiscussion.responses}
-			}, function (err, foundResponses) {
-				if (req.apiQuery){
-					res.json({discussion: foundDiscussion, responses: foundResponses});
+			if (foundDiscussion.public === false){
+				if (req.user){
+					if (foundDiscussion.participants.indexOf(req.user._id) !== -1){
+						Response.find({
+							'_id': { $in: foundDiscussion.responses}
+						}, function (err, foundResponses) {
+							if (req.apiQuery){
+								res.json({discussion: foundDiscussion, responses: foundResponses});
+							} else {
+								res.render('discussion', {discussionId: discussionId, user: req.user});
+							}
+						})
+					} else {
+						res.send("Unauthorized");
+					}
 				} else {
-					res.render('discussion', {discussionId: discussionId, user: req.user});
+					res.render('login');
 				}
-			})
+			} else {
+				Response.find({
+					'_id': { $in: foundDiscussion.responses}
+				}, function (err, foundResponses) {
+					if (req.apiQuery){
+						res.json({discussion: foundDiscussion, responses: foundResponses});
+					} else {
+						res.render('discussion', {discussionId: discussionId, user: req.user});
+					}
+				})
+			}
 		}
 	});
 });
@@ -59,7 +78,8 @@ router.post('/', function(req, res, next) {
 			public: req.body.visibility == 'public',
 			created_by: req.user.first_name + " " + req.user.last_name,
 			responses: [newResponse._id],
-			relationships: [relationship]
+			relationships: [relationship],
+			participants: [req.user._id]
 		});
 
 		newResponse.original_discussion = newDiscussion._id;

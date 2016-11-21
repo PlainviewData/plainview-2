@@ -7,7 +7,6 @@ var Discussion = require('../models/discussion');
 var Response = require('../models/response');
 var Account = require('../models/account');
 
-/* GET home page. */
 router.get('/', function(req, res, next) {
   Response.find({}, function(err, result, count){
 	res.send('/public/index.html')
@@ -26,11 +25,13 @@ router.post('/register', function(req, res, next){
 	})
 	Account.register(newAccount, req.body.password, function(err, account) {
 		if (err) {
+			console.log(err)
 			res.redirect(req.header('Referer'));
+		} else {
+			passport.authenticate('local')(req, res, function () {
+				res.redirect(req.header('Referer'));
+			});
 		}
-		passport.authenticate('local')(req, res, function () {
-			res.redirect(req.header('Referer'));
-		});
 	});
 });
 
@@ -52,10 +53,10 @@ router.get('/profile', function(req, res, next){
 				Discussion.find({
 					'_id': { $in: foundAccount.discussions}
 				}, function (err, foundDiscussions) {
-					res.render('profile', {user: req.user, discussions: foundDiscussions, responses: foundResponses});
-				})
-			})
-		})
+					res.render('profile', {user: foundAccount, discussions: foundDiscussions, responses: foundResponses});
+				});
+			});
+		});
 	} else {
 		res.render('login');
 	}

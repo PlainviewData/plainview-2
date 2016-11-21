@@ -1,5 +1,6 @@
 <div class="container">
 	<h1>{{user.first_name}} {{user.last_name}}</h1>	
+	<h4 id="user-join-date"></h4>
 	<ul>
 		Responses
 		{{#each responses}}
@@ -7,3 +8,9 @@
 		{{/each}}
 	</ul>
 </div>
+<script>
+	var date = new Date('{{user.created_on}}').toDateString();
+	$(document).ready(function(){
+		$('#user-join-date').text("Joined " + date);
+	})
+</script>

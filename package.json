@@ -5,6 +5,9 @@
   "scripts": {
     "start": "node ./bin/www"
   },
+  "scripts": {
+    "flow": "flow; test $? -eq 0 -o $? -eq 2"
+  },
   "dependencies": {
     "body-parser": "^1.15.2",
     "connect-redis": "^3.1.0",
@@ -25,7 +28,9 @@
   },
   "description": "WikiThinks ===== Operated by: Jordan Coimbra, Daniel Balagula",
   "main": "app.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "flow-bin": "^0.35.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/danielbalagula/WikiThinks.git"
