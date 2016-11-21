@@ -124,11 +124,11 @@ app.use(function(err, req, res, next) {
 
 io.on( "connection", function( socket ) {
   socket.on("viewingDiscussion", function(id){
-	if (discussionClients[id] === undefined){
-	  discussionClients[id] = [socket.id];
-	} else {
-	  discussionClients[id].push(socket.id);
-	}
+    if (discussionClients[id] === undefined){
+      discussionClients[id] = [socket.id];
+    } else {
+      discussionClients[id].push(socket.id);
+    }
   })
 });
 
