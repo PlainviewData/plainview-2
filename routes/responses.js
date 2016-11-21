@@ -50,7 +50,8 @@ router.post('/', function(req, res, next) {
 
 	if (req.user){
 		Account.findByIdAndUpdate(req.user._id,
-			{$push: {'responses': savedResponse.id}})
+			{$push: {'responses': newResponse.id}},
+			{safe: true, upsert: true});
 	}
 	
 	responseTitle.find({title: req.body.responseTitle}, function(err, foundResponse, num){
