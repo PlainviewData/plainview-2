@@ -10,7 +10,7 @@ var Account = require('../models/account');
 router.post('/', function(req, res, next) {
 	var signature = "";
 	if (req.user){
-		signature = req.user.first_name + " " + req.user.last_name;
+		signature = req.user.first_name + " " + req.user.last_name[0];
 	} else {
 		signature = "Demo User";
 	}
@@ -20,7 +20,8 @@ router.post('/', function(req, res, next) {
 			original_discussion: currentDiscussionId,
 			title: req.body.responseTitle,
 			text: req.body.responseText,
-			created_by: signature,
+			created_by: req.user._id,
+			signature: signature
 		});
 	newResponse.save(function(err, savedResponse){
 		var relationship = {}
@@ -65,12 +66,15 @@ router.post('/', function(req, res, next) {
 });
 
 router.get('/', function(req, res, next) {
-	var query = getRegexFields(req.query);
-	Response.find(query, function(err, foundResponses){
+	Response.find({'$or': [
+		{'title': {'$regex': req.query.response_query}},
+		{'text': {'$regex': req.query.response_query}},
+		{'tags': {'$regex': req.query.response_query}},
+	]}, function(err, foundResponses){
 		if (req.apiQuery){
-			res.json(foundResponses);
+			res.json({responses: foundResponses});
 		} else {
-			res.render('responses', {responses: foundResponses, user: req.user});
+			res.render('responses', {title: req.params.response_query, responses: foundResponses, user: req.user, response_query: req.query.response_query});
 		}
 	})
 });
@@ -98,13 +102,17 @@ router.get('/id/:response_id([0-9a-f]{24})', function(req, res, next) {
 });
 
 router.get('/:response_query', function(req, res, next) {
-	Response.find({title: req.params.response_query}, function (err, foundResponses) {
-		if (req.apiQuery){
-			res.json({responses: foundResponses});
-		} else {
-			res.render('responses', {title: req.params.response_query, responses: foundResponses, user: req.user});
-		}
-	});
+	Response.find({'$or': [
+			{'title': {'$regex': req.params.response_query}},
+			{'text': {'$regex': req.params.response_query}},
+			{'tags': {'$regex': req.params.response_query}},
+		]}, function(err, foundResponses){
+			if (req.apiQuery){
+				res.json({responses: foundResponses});
+			} else {
+				res.render('responses', {title: req.params.response_query, responses: foundResponses, user: req.user});
+			}
+		})
 });
 
 router.get('/responseTitles/:response_query', function(req, res, next){

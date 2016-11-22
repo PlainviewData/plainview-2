@@ -108,28 +108,138 @@ $(document).ready(function(){
 
 		responses = data.responses, discussion = data.discussion;
 		responses.forEach(function(response){
-			var currentResponse = new nodeData(response);
-			nodeDataArray.push(currentResponse);
+			var retrievedResponse = new nodeData(response);
+			nodeDataArray.push({response._id: retrievedResponse});
 
-			var relationshipType = discussion.relationships.filter(function(relationship){  return relationship[currentResponse.getResponseId] !== undefined })[0][currentResponse.getResponseId].relationshipType;
+			var relationshipType = discussion.relationships.filter(function(relationship){  return relationship[retrievedResponse.getResponseId] !== undefined })[0][retrievedResponse.getResponseId].relationshipType;
 		
-			if (discussion.citations.indexOf(currentResponse) === -1){
-				g.setNode(currentResponse.getNodeId(), { style: "stroke: " + responseColors['original'] + "; stroke-width: 0.5px", id: currentResponse.getNodeId(), labelType: 'html', label: compiledResponseTemplate({templateData : {displayed: "none", response: currentResponse, class: "citationResponse", responseTypeColor: 'black'}}), class: "unselected-node "});
+			if (discussion.citations.indexOf(retrievedResponse) === -1){
+				g.setNode(retrievedResponse.getNodeId(), { style: "stroke: " + responseColors['original'] + "; stroke-width: 0.5px", 
+					id: retrievedResponse.getNodeId(), 
+					labelType: 'html', 
+					label: compiledResponseTemplate({
+						templateData : {
+							displayed: "none", 
+							response: currentResponse, 
+							class: "citationResponse", 
+							responseTypeColor: 'black'
+						}
+					}), 
+					class: "unselected-node "
+				});
 			} else {
-				g.setNode(currentResponse.getNodeId(), { style: "stroke: " + responseColors['citation'] + "; stroke-width: 0.5px", id: currentResponse.getNodeId(), labelType: 'html', label: compiledResponseTemplate({templateData : {displayed: "none", response: currentResponse, class: "originalResponse", responseTypeColor: 'black'}}), class: "unselected-node"});
+				g.setNode(retrievedResponse.getNodeId(), { style: "stroke: " + responseColors['citation'] + "; stroke-width: 0.5px", 
+					id: retrievedResponse.getNodeId(), 
+					labelType: 'html', 
+					label: compiledResponseTemplate({
+						templateData : {
+							displayed: "none", 
+							response: retrievedResponse, 
+							class: "originalResponse", 
+							responseTypeColor: 'black'
+						}
+					}), 
+					class: "unselected-node"
+				});
 			}
 			
 			discussion.relationships.slice(1, discussion.relationships.length).forEach(function(relationship){
-				if (discussion.citations.hasOwnProperty(currentResponse.)){
-					g.setEdge(nodeDataArray[relationship[currentResponse.getResponseId]['relatedResponse']].getNodeId(), currentResponse.getNodeId(), {
-						style: edgeStyles[relationship[currentResponse.getResponseId]['responseType']],
-						arrowhead: arrowheadTypes[relationship[currentResponse.getResponseId]['relatedResponse']]
+				if (discussion.citations.hasOwnProperty(retrievedResponse.)){
+					g.setEdge(nodeDataArray[relationship[retrievedResponse.getResponseId]['relatedResponse']].getNodeId(), retrievedResponse.getNodeId(), {
+						style: edgeStyles[relationship[retrievedResponse.getResponseId]['responseType']],
+						arrowhead: arrowheadTypes[relationship[retrievedResponse.getResponseId]['relatedResponse']]
 					});
 				}
 			});
 		});
 
-		
+		$('#responses').on('click', '.cite-response', function(e){
+			var idOfClickedResponse = $(e.target).closest('.thumbnail').attr('id');
+			var clickedResponse = nodeDataArray[idOfClickedResponse];
+			if (clickedResponse.getNodeId() !== currentResponse){
+				addResponseToDiscussion(clickedResponse, currentResponse.getResponseId(), true);
+				$('#responseModal').modal('hide');
+			} else {
+				if($('.alert', '#'+idOfClickedResponse).length !== 1) {
+					$(e.target).closest('.thumbnail').append( "<div class='alert alert-warning'>Can't cite a response to itself</div>" );
+				}
+			}	
+			switchReplyView(currentResponse);
+		});
+
+		$('#responseBrowserSearchButton').on('click',function(e) {
+			e.preventDefault();
+			var searchQuery = {
+				title: ($('#responseTitle').val()),
+				text: ($('#responseKeywords').val())
+			};
+			fetchResponses(searchQuery);
+		});
+
+		$('#responses').on('click', '.use-title',function(e){
+			var idOfClickedResponse = $(e.target).closest('.thumbnail').attr('id');
+			var clickedResponseTitle = nodeDataArray[idOfClickedResponse].title;
+			$('#responseModal').modal('hide');
+			$('#' currentResponse.getDomTextId()).val(clickedResponseTitle);
+		})
+
+		renderGraph();
+		renderGraph();
+
+		function renderGraph(){
+			
+			setTransition(500);
+
+			for (var responseId in nodeDataArray){
+				saveNodeState(nodeDataArray[responseId]);
+				redrawNode(nodeDataArray[responseId]);
+			}
+
+			d3.select("svg g").call(render, g);
+
+
+			function setTransition(time){
+				g.graph().transition = function(selection) {
+					return selection.transition().duration(time);
+				};
+			}
+
+			function saveNodeState(response){ 
+				if ($("#"+response.getDomTitleId).val() !== undefined && $("#"+response.getDomTitleId).val() !== ""){
+					response.writtenTitle = $("#"+response.getDomTitleId).val();
+				}
+				if ($("#"+response.getDomTextId).val() !== undefined && $("#"+response.getDomTextId).val() !== ""){
+					response.writtenReply = $("#"+response.getDomTextId).val();
+				}
+			}
+
+			function redrawNode(response){
+				var node = g.node(response.getNodeId());
+				node.rx = node.ry = 3;
+				if (node !== undefined){
+					var displayed;
+					if (node.label.indexOf('display:none') !== -1){
+						displayed = "none";
+					} else {
+						displayed = "inline-block";
+					}
+					g.setNode(response.getNodeId(), { style: "stroke: " + responseColors['citation'] + "; stroke-width: 0.5px", 
+						id: response.getNodeId(), 
+						labelType: 'html', 
+						label: compiledResponseTemplate({
+							templateData : {
+								displayed: displayed, 
+								response: response, 
+								class: "originalResponse", 
+								responseTypeColor: 'black'
+							}
+						}), 
+						class: "unselected-node"
+					});
+				}
+			}
+
+		}
 
 	});
 

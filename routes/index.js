@@ -8,10 +8,19 @@ var Response = require('../models/response');
 var Account = require('../models/account');
 
 router.get('/', function(req, res, next) {
-  Response.find({}, function(err, result, count){
-	res.send('/public/index.html')
-  })
+	Response.find({}, function(err, result, count){
+		res.send('/public/index.html')
+	})
 });
+
+router.get('/index', function(req, res, next){
+	Response.find()
+			.sort({'created_on': -1})
+			.limit(30)
+			.exec(function(err, responses){
+				res.render('index', {responses: responses, user: req.user});
+			})
+})
 
 router.post('/login', passport.authenticate('local'), function(req, res) {
 	res.redirect(req.header('Referer'));

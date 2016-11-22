@@ -5,7 +5,7 @@ var Response = require('../models/response');
 var Discussion = require('../models/discussion');
 
 router.get('/', function(req, res, next) {
-  	console.log(req.user._id);
+	console.log(req.user._id);
 });
 
 router.get('/id/:user_id', function(req, res, next) {

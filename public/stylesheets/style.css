@@ -98,6 +98,8 @@ font-family: 'Open Sans', sans-serif;
 	display: inline-block;
 }*/
 
+
+
 .responseSampleTitle {
    width: 90%;
    white-space: nowrap;
@@ -115,11 +117,22 @@ font-family: 'Open Sans', sans-serif;
   font-size: 12px;
 }
 
+$font-size: 26px;
+$line-height: 1.4;
+$lines-to-show: 3;
+
 .responseSampleThumbnail {
-   width: 100%;
-   word-break: normal;
-   overflow: hidden;
-   text-overflow: ellipsis;
+  display: block; /* Fallback for non-webkit */
+  display: -webkit-box;
+  max-width: 400px;
+  height: 14px*1.5*3; /* Fallback for non-webkit */
+  margin: 0 auto;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;"
 }
 
 #logo {

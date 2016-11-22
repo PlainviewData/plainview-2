@@ -139,10 +139,10 @@ $(document).ready(function() {
 		function renderGraph(){
 
 			g.graph().transition = function(selection) {
-			  return selection.transition().duration(500);
+				return selection.transition().duration(500);
 			};
 
-			g.nodes().forEach(function(nodeId){
+			g.nodes().forEach(function saveState(nodeId){
 				var id = nodeId.substring(1);
 				if ($("#t"+id).val() !== undefined && $("#t"+id).val() !== ""){
 					states[id].dataPersistence.writtenTitle = $("#t"+id).val();

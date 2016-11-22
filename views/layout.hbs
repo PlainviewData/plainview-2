@@ -26,10 +26,11 @@
 			<div id="navbar1" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
 					<li class="active">
-						<form class="navbar-form navbar-left">
+						<form class="navbar-form navbar-left" action="/responses">
 							<div class="form-group">
-								<input type="text" action="/responses" class="form-control" style="height:30px;" placeholder="Search Plainview">
+								<input id="searchQuery" name="response_query" type="text" method="GET" class="form-control" style="height:30px;" placeholder="Search Plainview">
 							</div>
+							<input type="submit"/>
 						</form>
 					</li>
 				</ul>
@@ -60,7 +61,7 @@
 					<div class="modal-body">
 						<form action="/login" id="loginForm" method="POST">
 							<div class="form-group row">
-								 <label for="username" class="col-sm-2 col-form-label">Email</label>
+								 <label for="username" class="col-sm-2 col-form-label">Username</label>
 								<div class="col-sm-7">
 									<input type="text" id="username" style="width:100%" name="username">
 								</div>
@@ -87,21 +88,9 @@
 					<div class="modal-body">
 						<form action="/register" id="registerForm" method="POST">
 							<div class="form-group row">
-								<label for="firstName" class="col-sm-2 col-form-label">First name</label>
+								<label for="username" class="col-sm-2 col-form-label">Username</label>
 								<div class="col-sm-7">
-									<input type="text" id="firstName" style="width:100%" name="firstName">
-								</div>
-							</div>
-							<div class="form-group row">
-								<label for="lastName" class="col-sm-2 col-form-label">Last name</label>
-								<div class="col-sm-7">
-									<input type="text" id="lastName" style="width:100%" name="lastName">
-								</div>
-							</div>
-							<div class="form-group row">
-								<label for="username" class="col-sm-2 col-form-label">Email</label>
-								<div class="col-sm-7">
-									<input type="email" name="username" id="username" tabindex="1" class="form-control" placeholder="Email Address" value="">
+									<input type="text" name="username" id="username" tabindex="1" class="form-control" value="">
 								</div>
 							</div>
 							<div class="form-group row">

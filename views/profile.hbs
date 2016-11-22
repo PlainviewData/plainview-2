@@ -1,12 +1,30 @@
 <div class="container">
-	<h1>{{user.first_name}} {{user.last_name}}</h1>	
-	<h4 id="user-join-date"></h4>
-	<ul>
-		Responses
-		{{#each responses}}
-				<li><a href="/discussions/id/{{this.original_discussion}}">{{this.title}}</a></li>
-		{{/each}}
-	</ul>
+	<h1><a href="/users/id/{{user._id}}">{{user.first_name}} {{user.last_name}}</a></h1>	
+	<h6 id="user-join-date"></h6>
+	<div class="container">
+		<div class="container">
+			<h4>Responses</h4>
+			{{#each responses}}
+			<div class="col-sm-6 col-md-4">
+				<div class="thumbnail responseTile">
+					<div class="caption">
+						<div class="pull-right dropdown">
+							<a href="#" data-toggle="dropdown" class="dropdown-toggle"><span class="glyphicon glyphicon-option-vertical responseTileDropdown"></span></a>
+							<ul class="dropdown-menu dropdown-menu-right">
+								<li><a href="../responses/id/{{this._id}}">View information</a></li>
+								<li class="clipboardDropdown" data-clipboard-text="{{this._id}}" style="cursor: hand"><a>Copy reference id</a></li>
+								<li><a href="../discussions/id/{{this.original_discussion}}">Go to original discussion</a></li>
+							</ul>
+						</div>
+						<h5 class="responseSampleTitle"><b>{{this.title}}</b></h5>
+						</br>
+						<div class="responseSampleThumbnail">{{this.text}}</div>
+					</div>
+				</div>
+			</div>
+			{{/each}}
+		</div>
+	</div>
 </div>
 <script>
 	var date = new Date('{{user.created_on}}').toDateString();

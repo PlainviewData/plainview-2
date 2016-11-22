@@ -10,11 +10,13 @@ Operated by: Jordan Coimbra, Daniel Balagula
 - mouse selecting nodes is not as fluid as it could be
 - labels for form info overflow when screen is tight (they shouldn't)
 - ~~edge styles have grey at the ends (they shouldn't)~~ Altered: edge styles don't represent response relationships
-- ~lines wrap and break in-between words (they shouldn't)~ Fixed 11/06/2016
+- ~~lines wrap and break in-between words (they shouldn't)~~ Fixed 11/06/2016
 - ~~line breaks sometimes go beyond node widths (they shouldn't)~~ Fixed 11/06/2016
 - ~~responses' original uses are not recorded (they should be)~~ Fixed 10/24/2016
 
 ##To Do:
+- Create preview data field for responses that is shown for browsing to decrease bandwidth
+- Response signature/created_by should be sorted out (?)
 - Create node-information objects that hold ids, values, etc.
 - Why do I have to render twice to get rid of formatting inconsistensies?
 - Figure out how to mark when someone left a debateExerience server-side. Or just clear when they disconnect? What is the best way?
@@ -65,7 +67,7 @@ Operated by: Jordan Coimbra, Daniel Balagula
 - Reflect upon all design decisions
 
 ##Questions:
-- Do we want to have transitions in the graph?
+- ~~Do we want to have transitions in the graph?~~ Yes
 - How would having a slightly grey background look on the graph?
 - Should we implement tags?
 - What font do we want arguments to use?

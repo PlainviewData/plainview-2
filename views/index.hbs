@@ -4,7 +4,7 @@
 	  <input class="typeahead form-control" type="text" placeholder="Search Plainview" id="front-search" name="responseTitle">
 	  <hr class="my-2">
 	  <p class="lead">
-	    <a href="/">Learn more</a>
+		<a href="/">Learn more</a>
 	  </p>
   </div>
 </div> -->
@@ -13,39 +13,50 @@
 	<div class="container">
 		<h2 class="display-3" id="welcome">Welcome to Plainview!</h2>
 		<input class="typeahead form-control" type="text" placeholder="Search discussions, responses, and tags" id="front-search" name="responseTitle">
-	    <hr class="my-2" style="clear: both; visibility: hidden;">
+		<hr class="my-2" style="clear: both; visibility: hidden;">
 		<p class="lead">
-		    <a href="/about" id="jumbotron-link">Learn more</a>
+			<a href="/about" id="jumbotron-link">Learn more</a>
 		  </p>
 	</div>
 </div>
 <div class="container">
-	<h3>Top Responses</h3>
-    <!-- <div class="list-group">
-    {{#each discussions}}
-        <a href="#" class="list-group-item list-group-item-action">
-            <h5 class="list-group-item-heading">Title</h5>
-            <p class="list-group-item-text">Body</p>
-        </a>
-    {{/each}}
-    </div> -->
-    {{#each responses}}
-	  <div class="col-sm-6 col-md-4">
-	    <div class="thumbnail responseTile">
-	      <div class="caption">
-			<div class="pull-right dropdown">
-			    <a href="#" data-toggle="dropdown" class="dropdown-toggle"><span class="glyphicon glyphicon-option-vertical responseTileDropdown"></span></a>
-			    <ul class="dropdown-menu dropdown-menu-right">
-			        <li><a href="../responses/id/{{this._id}}">View information</a></li>
-			        <li class="clipboardDropdown" data-clipboard-text="{{this._id}}" style="cursor: hand"><a>Copy reference id</a></li>
-			        <li><a href="../discussions/id/{{this.original_discussion}}">Go to original discussion</a></li>
-			    </ul>
+	<h3>Newest Responses</h3>
+	<!-- <div class="list-group">
+	{{#each discussions}}
+		<a href="#" class="list-group-item list-group-item-action">
+			<h5 class="list-group-item-heading">Title</h5>
+			<p class="list-group-item-text">Body</p>
+		</a>
+	{{/each}}
+	</div> -->
+	{{#each responses}}
+		<div class="col-sm-6 col-md-4">
+			<div class="thumbnail responseTile">
+				<div class="caption">
+					<div class="pull-right dropdown">
+						<a href="#" data-toggle="dropdown" class="dropdown-toggle"><span class="glyphicon glyphicon-option-vertical responseTileDropdown"></span></a>
+						<ul class="dropdown-menu dropdown-menu-right">
+							<li><a href="../responses/id/{{this._id}}">View information</a></li>
+							<li class="clipboardDropdown" data-clipboard-text="{{this._id}}" style="cursor: hand"><a>Copy reference id</a></li>
+							<li><a href="../discussions/id/{{this.original_discussion}}">Go to original discussion</a></li>
+						</ul>
+					</div>
+					<h5 class="responseSampleTitle"><b>{{this.title}}</b></h5>
+					<h7 style="font-size: 12px;"><a href="users/id/{{this.created_by}}">{{this.signature}}</a></h7>
+					</br>
+					<p style=" display: block; /* Fallback for non-webkit */
+					  display: -webkit-box;
+					  max-width: 100%;
+					  height: 14px*1.5*3; /* Fallback for non-webkit */
+					  margin: 0 auto;
+					  font-size: 14px;
+					  line-height: 1.5;
+					  -webkit-line-clamp: 5;
+					  -webkit-box-orient: vertical;
+					  overflow: hidden;
+					  text-overflow: ellipsis;">{{this.text}}</p>
+					</div>
 			</div>
-	       	<h5 class="responseSampleTitle"><b>{{this.title}}</b></h5>
-	        </br>
-	        <div class="responseSampleThumbnail">{{this.text}}</div>
-	      </div>
-	    </div>
-	  </div>
+		</div>
 	{{/each}}
 </div>
