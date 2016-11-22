@@ -5,8 +5,12 @@ var Response = require('../models/response');
 var Discussion = require('../models/discussion');
 
 router.get('/', function(req, res, next) {
-	console.log(req.user._id);
+
 });
+
+router.get('/id/demouser', function(req,res,next){
+	res.redirect('/responses');
+})
 
 router.get('/id/:user_id', function(req, res, next) {
 	Account.findOne({_id: req.params.user_id}, function(err, foundAccount){

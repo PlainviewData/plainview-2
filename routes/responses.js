@@ -9,20 +9,22 @@ var Account = require('../models/account');
 
 router.post('/', function(req, res, next) {
 	var signature = "";
+	var created_by = "";
 	if (req.user){
-		signature = req.user.first_name + " " + req.user.last_name[0];
+		signature = req.user.username;
+		created_by = req.user._id;
 	} else {
-		signature = "Demo User";
+		signature = "Guest";
+		created_by = "demouser";
 	}
 	var currentDiscussionId = req.body.discussionId;
-	var newResponse;
-	newResponse = new Response({
-			original_discussion: currentDiscussionId,
-			title: req.body.responseTitle,
-			text: req.body.responseText,
-			created_by: req.user._id,
-			signature: signature
-		});
+	var newResponse = new Response({
+		original_discussion: currentDiscussionId,
+		title: req.body.responseTitle,
+		text: req.body.responseText,
+		created_by: created_by,
+		signature: signature
+	});
 	newResponse.save(function(err, savedResponse){
 		var relationship = {}
 		var io = req.app.get('socketio');
@@ -32,6 +34,7 @@ router.post('/', function(req, res, next) {
 			{safe: true, upsert: true},
 			function (err, foundDiscussion) {
 				if (err){
+					console.log(err)
 					res.send("error");
 				} else {
 					if (req.apiQuery){
@@ -48,11 +51,12 @@ router.post('/', function(req, res, next) {
 			}
 		);
 	});
-
 	if (req.user){
 		Account.findByIdAndUpdate(req.user._id,
 			{$push: {'responses': newResponse.id}},
-			{safe: true, upsert: true});
+			{safe: true, upsert: true}, function(err, updatedAccount){
+				console.log(err)
+			});
 	}
 	
 	responseTitle.find({title: req.body.responseTitle}, function(err, foundResponse, num){
@@ -60,7 +64,7 @@ router.post('/', function(req, res, next) {
 			var newResponseTitle = new responseTitle({
 				title: req.body.responseTitle
 			});
-			newResponseTitle.save(function(err, savedResponse){})
+			newResponseTitle.save(function(err, savedResponse){console.log(err)})
 		}
 	})
 });

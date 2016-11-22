@@ -12,11 +12,14 @@
 <div class="jumbotron">
 	<div class="container">
 		<h2 class="display-3" id="welcome">Welcome to Plainview!</h2>
-		<input class="typeahead form-control" type="text" placeholder="Search discussions, responses, and tags" id="front-search" name="responseTitle">
-		<hr class="my-2" style="clear: both; visibility: hidden;">
-		<p class="lead">
-			<a href="/about" id="jumbotron-link">Learn more</a>
-		  </p>
+		<form action="/responses" method="GET">
+			<input class="typeahead form-control" type="text" placeholder="Search discussions, responses, and tags" id="front-search" name="response_query">
+			<hr class="my-2" style="clear: both; visibility: hidden;">
+			<p class="lead">
+				<a href="/about" id="jumbotron-link">Learn more</a>
+			</p>
+			<input type="submit" class="hidden_submit">
+		</form>
 	</div>
 </div>
 <div class="container">

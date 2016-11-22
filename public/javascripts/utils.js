@@ -11,7 +11,7 @@ $(document).ready(function(){
 				}
 			});
 
-			$(this).find('input[type=submit]').hide();
+			$(this).find('.hidden_submit').hide();
 		});
 	});
 
