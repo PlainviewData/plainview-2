@@ -42,6 +42,7 @@ $(document).ready(function() {
 		});
 	zoom.scale(zoom.scale()*1.5)
 	svg.call(zoom).on("dblclick.zoom", null);
+	svg.call(zoom).on("dblclick.zoom", null);
 	svg.call(zoom).call(zoom.event);
 	
 	//zoom.scaleExtent([1, 2]) max/min zooms

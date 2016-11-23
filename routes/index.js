@@ -55,9 +55,13 @@ router.get('/search', function(req, res, next){
 		{'title': {'$regex': req.query.response_query}},
 		{'text': {'$regex': req.query.response_query}},
 	]}, function(err, foundResponses){
-			Discussion.find({'tags': req.query.response_query}, function(err, foundDiscussions){
-				res.render('search', {responses: foundResponses, discussions: foundDiscussions, user: req.user, response_query: req.query.response_query});
-			})
+			if (req.query.response_query){
+				Discussion.find({'tags': req.query.response_query}, function(err, foundDiscussions){
+					res.render('search', {responses: foundResponses, discussions: foundDiscussions, user: req.user, response_query: req.query.response_query});
+				})
+			} else {
+					res.render('search', {responses: foundResponses, user: req.user, response_query: req.query.response_query});				
+			}
 		}
 	)
 

@@ -8,14 +8,14 @@ router.get('/', function(req, res, next) {
 
 });
 
-router.get('/id/demouser', function(req,res,next){
+router.get('/demouser', function(req,res,next){
 	res.redirect('/responses');
 })
 
-router.get('/id/:user_id', function(req, res, next) {
+router.get('/:user_id', function(req, res, next) {
 	Account.findOne({_id: req.params.user_id}, function(err, foundAccount){
 		if (foundAccount){
-			if (''+req.user._id == ''+foundAccount._id) {
+			if (req.user && ''+req.user._id == ''+foundAccount._id) {
 				res.redirect('/profile');
 			} else {
 				Response.find({
@@ -24,7 +24,7 @@ router.get('/id/:user_id', function(req, res, next) {
 					Discussion.find({
 						'_id': { $in: foundAccount.discussions}
 					}, function (err, foundDiscussions) {
-						res.render('users', {user: foundAccount, discussions: foundDiscussions, responses: foundResponses});
+						res.render('users', {user: req.user, discussions: foundDiscussions, responses: foundResponses});
 					});
 				});
 			}

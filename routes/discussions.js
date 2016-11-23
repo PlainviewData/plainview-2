@@ -67,7 +67,8 @@ router.post('/', function(req, res, next) {
 			isLink: false,
 			title: req.body.responseTitle,
 			text: req.body.responseText,
-			created_by: req.user.first_name + " " + req.user.last_name
+			created_by: req.user._id,
+			signature: req.user.username
 		});
 
 		var relationship = {}
@@ -83,6 +84,7 @@ router.post('/', function(req, res, next) {
 			responses: [newResponse._id],
 			relationships: [relationship],
 			participants: [req.user._id],
+			signature: req.user.username
 		});
 
 		newResponse.original_discussion = newDiscussion._id;

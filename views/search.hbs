@@ -9,14 +9,15 @@
 		<h2>Discussions with tag "{{this.response_query}}"</h2>
 		<div class="list-group">
 		{{#each discussions}}
-			<h5 class="list-group-item-heading"><a href="/" class="list-group-item list-group-item-action">{{this.title}}</a></h5>
-			<p class="list-group-item-text">{{this.responses.length}} replies</p>
+			<p class="list-group-item-heading"><a href="/discussions/id/{{this._id}}" class="list-group-item list-group-item-action">{{this.title}} - {{this.signature}} - {{this.responses.length}} replies</a></p>
 		{{/each}}
 		</div>
 	{{/if}}
 
 	{{#if responses}}
-		<h2>Responses containing the keyword "{{this.response_query}}"</h2>
+		{{#if this.response_query}}
+			<h2>Responses containing the keyword "{{this.response_query}}"</h2>
+		{{/if}}
 		<div class="row">
 			{{#each responses}}
 				<div class="col-sm-6 col-md-4">
@@ -31,19 +32,21 @@
 								</ul>
 							</div>
 							<h5 class="responseSampleTitle"><b>{{this.title}}</b></h5>
+							<h7 style="font-size: 12px;"><a href="users/{{this.created_by}}">{{this.signature}}</a></h7>
 							</br>
-							<p style=" display: block; /* Fallback for non-webkit */
-						  display: -webkit-box;
-						  max-width: 100%;
-						  height: 14px*1.5*3; /* Fallback for non-webkit */
-						  margin: 0 auto;
-						  font-size: 14px;
-						  line-height: 1.5;
-						  -webkit-line-clamp: 5;
-						  -webkit-box-orient: vertical;
-						  overflow: hidden;
-						  text-overflow: ellipsis;">{{this.text}}</p>
-						</div>
+							<p style="
+								display: block;
+								display: -webkit-box;
+								max-width: 100%;
+								height: 14px*1.5*3;
+								margin: 0 auto;
+								font-size: 14px;
+								line-height: 1.5;
+								-webkit-line-clamp: 5;
+								-webkit-box-orient: vertical;
+								overflow: hidden;
+								text-overflow: ellipsis;">{{this.text}}</p>
+							</div>
 					</div>
 				</div>
 			{{/each}}
