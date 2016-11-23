@@ -9,13 +9,8 @@ var Account = require('../models/account');
 var Tag = require('../models/tag');
 
 router.get('/', function(req, res, next) {
-	Response.find({}, function(err, result, count){
-		res.send('/public/index.html')
-	})
-});
-
-router.get('/index', function(req, res, next){
-	Response.find()
+	if (req.development) {
+		Response.find()
 			.sort({'created_on': -1})
 			.limit(30)
 			.exec(function(err, responses){
@@ -26,7 +21,10 @@ router.get('/index', function(req, res, next){
 					res.render('index', {responses: responses, user: req.user, tags: foundTags});
 				})
 			})
-})
+	} else {
+		res.sendFile('public/pres.html', {'root': __dirname+"/../"})
+	}
+});
 
 router.post('/login', passport.authenticate('local'), function(req, res) {
 	res.redirect(req.header('Referer'));
@@ -53,19 +51,20 @@ router.post('/register', function(req, res, next){
 
 router.get('/search', function(req, res, next){
 	Response.find({'$or': [
-		{'title': {'$regex': req.query.response_query}},
-		{'text': {'$regex': req.query.response_query}},
-	]}, function(err, foundResponses){
-			if (req.query.response_query){
-				Discussion.find({'tags': req.query.response_query}, function(err, foundDiscussions){
-					res.render('search', {responses: foundResponses, discussions: foundDiscussions, user: req.user, response_query: req.query.response_query});
-				})
-			} else {
-					res.render('search', {responses: foundResponses, user: req.user, response_query: req.query.response_query});				
-			}
-		}
-	)
-
+				{'title': {'$regex': req.query.response_query, "$options": "i" }},
+				{'text': {'$regex': req.query.response_query, "$options": "i" }},
+			]})
+			.sort({'created_on': -1})
+			.limit(30)
+			.exec(function(err, foundResponses){
+				if (req.query.response_query){
+					Discussion.find({'tags': new RegExp("^" + req.query.response_query.toLowerCase(), "i")}, function(err, foundDiscussions){
+						res.render('search', {responses: foundResponses, discussions: foundDiscussions, user: req.user, response_query: req.query.response_query});
+					})
+				} else {
+						res.render('search', {responses: foundResponses, user: req.user, response_query: req.query.response_query});				
+				}
+			});
 })
 
 router.get('/logout', function(req, res) {

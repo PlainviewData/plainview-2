@@ -60,6 +60,15 @@ passport.use(new LocalStrategy(Account.authenticate()));
 passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
+app.use(function(req, res, next){
+	if (app.get('env') === 'development') {
+		req.development = true;
+	} else {
+		req.development = false;
+	}
+	next();
+})
+
 app.use('/', routes);
 app.use('/api', api);
 app.use('(/api)?/users', users);
@@ -103,9 +112,9 @@ app.use(function(err, req, res, next) {
 		status404 = true;
 	}
 	res.render('error', {
-	message: err.message,
-	status404: status404,
-	user: req.user
+		message: err.message,
+		status404: status404,
+		user: req.user
 	});
 });
 

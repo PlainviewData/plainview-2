@@ -11,7 +11,8 @@ var Account = new Schema({
 	discussions: [Schema.Types.Object],
 	notifications: [Schema.Types.Object],
 	permissions: [],
-	api_key: String
+	api_key: String,
+	last_post: Number
 });
 
 // Account.pre("save",function(next) {

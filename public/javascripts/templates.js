@@ -1,19 +1,7 @@
 var responseBrowserTemplate = `
 <% _.each(responses, function(response){ %>
-     <div class="thumbnail" id="<%= response._id %>">
-      <div class="caption">
-        <span class="pull-left"> <font size=3 color='grey'><i><a href="/responses/<%= response.title %>"><%= response.title %></a></i></font></span>
-        </br>
-        <div class="responseSampleThumbnail">
-			<%= response.text %>
-			</br>
-			<div class="btn-toolbar btn-toolbar-sm pull-right">
-	    		<button class="btn btn-sm btn-primary use-title">Use Title</button>
-	    		<button class="btn btn-sm cite-response">Cite Response</button>
-	    	</div>
-        </div>
-      </div>
-     </div>
+<%= response.text %>
+
 <% }); %>
       `
 var responseBrowser = _.template(responseBrowserTemplate);
@@ -36,11 +24,9 @@ var responseTemplate = `
 			<hr style="border: none; height:1px; background-color: black ">
 			<form id="responseForm-<%= templateData.response._id %>">
 				<div id="newResponseTitleDiv" class="form-group row">
-					<div id="suggestedTitles">
-						Response title:
-						<input class="typeahead form-control" style="width: 50%; display:inline-block;" type="text" data-toggle="popover" data-trigger="focus" value="<%= templateData.dataPersistence.writtenTitle %>" data-content="Describe a specific position that you will defend." id="t<%= templateData.response._id %>" name="title">
-						<button type="button" class="btn btn-outline-secondary btn-sm"  data-toggle="modal" data-target="#responseModal">Browse</button>
-					</div>
+					Response title:
+					<input class="typeahead form-control" style="width: 50%; display:inline-block;" type="text" data-toggle="popover" data-trigger="focus" value="<%= templateData.dataPersistence.writtenTitle %>" data-content="Describe a specific position that you will defend." id="t<%= templateData.response._id %>" name="title">
+					<button type="button" class="btn btn-outline-secondary btn-sm"  data-toggle="modal" data-target="#responseModal">Browse</button>
 				</div>
 				<div class="form-group row">
 					<textarea id="r<%= templateData.response._id %>" name="text" rows="10" style="width:90%; border:solid .01px gray; resize: none;"><%= templateData.dataPersistence.writtenReply %></textarea>

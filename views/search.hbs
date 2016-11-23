@@ -1,7 +1,7 @@
 <div class="container">
 	<ol class="breadcrumb">
-	  <li><a href="/responses">Responses</a></li>
-	  <li><a href="/responses/{{response_query}}">{{response_query}}</a></li>
+	  <li><a href="/">Search</a></li>
+	  <li><a href="/search?response_query={{response_query}}">{{response_query}}</a></li>
 	</ol>
 	<h2>{{title}}</h2>
 
@@ -9,7 +9,7 @@
 		<h2>Discussions with tag "{{this.response_query}}"</h2>
 		<div class="list-group">
 		{{#each discussions}}
-			<p class="list-group-item-heading"><a href="/discussions/id/{{this._id}}" class="list-group-item list-group-item-action">{{this.title}} - {{this.created_by}} - {{this.responses.length}} replies</a></p>
+			<p class="list-group-item-heading"><a href="/discussions/id/{{this._id}}" class="list-group-item list-group-item-action"><b>{{this.title}}</b> - {{this.created_by}} - {{this.responses.length}} messages</a></p>
 		{{/each}}
 		</div>
 	{{/if}}

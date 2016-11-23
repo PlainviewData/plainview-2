@@ -301,6 +301,8 @@ $(document).ready(function() {
 					error: function(err){
 						if (err.status === 400){
 							notify("warning", "You must be signed in to reply to this conversation", "glyphicon glyphicon-alert");							
+						} else if (err.status === 429) {
+							notify("warning", "Please wait one minute after your last post", "glyphicon glyphicon-alert");
 						} else {
 							notify("warning", "Reply didn't go through. Please try again later", "glyphicon glyphicon-alert");
 						}
