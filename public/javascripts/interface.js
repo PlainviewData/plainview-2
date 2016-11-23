@@ -260,6 +260,10 @@ $(document).ready(function() {
 			}
 
 		function addResponseToDiscussion(newResponseData, relatedResponse, isCitation, cb){
+			if (Math.floor((Date.now() - localStorage.getItem("last_post"))/1000) <= 30 && localStorage.getItem("last_post") !== null) {
+				notify("warning", "Please wait 30 seconds after your last post", "glyphicon glyphicon-alert");
+				return;
+			}
 			if (isCitation){
 				$.ajax({
 					type: "POST",
@@ -272,12 +276,19 @@ $(document).ready(function() {
 					},
 					success: function(){
 						notify("success", "Replied to conversation", "glyphicon glyphicon-ok-circle");
+						localStorage.setItem("last_post", Date.now());
 						if (cb){
 							cb();
 						}
 					},
 					error: function(err){
-						notify("warning", "Reply didn't go through. Please try again later", "glyphicon glyphicon-alert");
+						if (err.status === 400){
+							notify("warning", "You must be signed in to reply to this conversation", "glyphicon glyphicon-alert");							
+						} else if (err.status === 429) {
+							notify("warning", "Please wait 30 seconds after your last post", "glyphicon glyphicon-alert");
+						} else {
+							notify("warning", "Reply didn't go through. Please try again later", "glyphicon glyphicon-alert");
+						}
 					}
 				})
 			} else {
@@ -294,6 +305,7 @@ $(document).ready(function() {
 					},
 					success: function(newResponse){
 						notify("success", "Replied to conversation", "glyphicon glyphicon-ok-circle");
+						localStorage.setItem("last_post", Date.now());
 						if (cb){
 							cb();
 						}
@@ -302,7 +314,7 @@ $(document).ready(function() {
 						if (err.status === 400){
 							notify("warning", "You must be signed in to reply to this conversation", "glyphicon glyphicon-alert");							
 						} else if (err.status === 429) {
-							notify("warning", "Please wait one minute after your last post", "glyphicon glyphicon-alert");
+							notify("warning", "Please wait 30 seconds after your last post", "glyphicon glyphicon-alert");
 						} else {
 							notify("warning", "Reply didn't go through. Please try again later", "glyphicon glyphicon-alert");
 						}

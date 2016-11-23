@@ -10,7 +10,7 @@ var Account = require('../models/account');
 
 router.post('/', function(req, res, next) {
 	if (req.isAuthenticated()){
-		if (Math.floor(((Date.now() - req.user.last_post)/1000)/60) >= 1 || req.user.last_post === undefined){
+		if (Math.floor((Date.now() - req.user.last_post)/1000) >= 30 || req.user.last_post === undefined){
 			var currentDiscussionId = req.body.discussionId;
 			var newResponse = new Response({
 				original_discussion: currentDiscussionId,

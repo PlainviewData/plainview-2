@@ -64,66 +64,69 @@ router.get('/id/:discussion_id([0-9a-f]{24})', function(req, res, next) {
 
 router.post('/', function(req, res, next) {
 	if (req.isAuthenticated()){
-		var newResponse = new Response({
-			isLink: false,
-			title: req.body.responseTitle,
-			text: req.body.responseText,
-			created_by: req.user.username,
-		});
+		if (Math.floor((Date.now() - req.user.last_post)/1000) >= 30 || req.user.last_post === undefined){
+			var newResponse = new Response({
+				isLink: false,
+				title: req.body.responseTitle,
+				text: req.body.responseText,
+				created_by: req.user.username,
+			});
 
-		var relationship = {}
-		relationship[newResponse._id.toString()] = {relatedResponse: "", relationshipType: "root"};
+			var relationship = {}
+			relationship[newResponse._id.toString()] = {relatedResponse: "", relationshipType: "root"};
 
-		var tags = req.body.tags.split(" ");
+			var tags = req.body.tags.split(" ");
 
-		var newDiscussion = new Discussion({
-			title: req.body.responseTitle,
-			tags: tags,
-			public: true,
-			created_by: req.user.username,
-			responses: [newResponse._id],
-			relationships: [relationship],
-			participants: [req.user._id],
-		});
+			var newDiscussion = new Discussion({
+				title: req.body.responseTitle,
+				tags: tags,
+				public: true,
+				created_by: req.user.username,
+				responses: [newResponse._id],
+				relationships: [relationship],
+				participants: [req.user._id],
+			});
 
-		newResponse.original_discussion = newDiscussion._id;
+			newResponse.original_discussion = newDiscussion._id;
 
-		newResponse.save(function(err, savedResponse){
-				newDiscussion.save(function(err, savedDiscussion) {
-					res.redirect('/discussions/id/' + newDiscussion._id);
-				});
-		});
-		
-		responseTitle.find({title: req.body.responseTitle}, function(err, foundResponse, num){
-			if (foundResponse !== undefined && foundResponse.length === 0){
-				var newResponseTitle = new responseTitle({
-					title: req.body.responseTitle
-				});
-				newResponseTitle.save(function(err, savedResponse){})
-			}
-		})
-		Account.findByIdAndUpdate(req.user._id,
-			{$push: {'discussions': newDiscussion.id, 'responses': newResponse._id}}, 
-			{safe: true, upsert: true}, function(err, foundAccount){}
-		)
-		tags.forEach(function(tag){
-			Tag.findOne({label: tag}, function(err, tagFound){
-				if (tagFound === null){
-					var newTag = new Tag({
-						label: tag,
-						discussions_using: 1
+			newResponse.save(function(err, savedResponse){
+					newDiscussion.save(function(err, savedDiscussion) {
+						res.redirect('/discussions/id/' + newDiscussion._id);
 					});
-					newTag.save(function(err, savedTag){
-						console.log(savedTag);
+			});
+			
+			responseTitle.find({title: req.body.responseTitle}, function(err, foundResponse, num){
+				if (foundResponse !== undefined && foundResponse.length === 0){
+					var newResponseTitle = new responseTitle({
+						title: req.body.responseTitle
 					});
-				} else {
-					tagFound.discussions_using = tagFound.discussions_using + 1;
-					console.log(tagFound);
-					tagFound.save();
+					newResponseTitle.save(function(err, savedResponse){})
 				}
 			})
-		})
-
+			Account.findByIdAndUpdate(req.user._id,
+				{$push: {'discussions': newDiscussion.id, 'responses': newResponse._id}}, 
+				{safe: true, upsert: true}, function(err, foundAccount){}
+			)
+			tags.forEach(function(tag){
+				Tag.findOne({label: tag}, function(err, tagFound){
+					if (tagFound === null){
+						var newTag = new Tag({
+							label: tag,
+							discussions_using: 1
+						});
+						newTag.save(function(err, savedTag){
+							console.log(savedTag);
+						});
+					} else {
+						tagFound.discussions_using = tagFound.discussions_using + 1;
+						console.log(tagFound);
+						tagFound.save();
+					}
+				})
+			})
+		} else {
+			res.send("Please wait 30 seconds before posting again");
+		}
 	} else {
 		res.render('login');
 	}
@@ -131,22 +134,24 @@ router.post('/', function(req, res, next) {
 
 router.post('/addCitationToDiscussion', function(req, res, next){
 	if (req.isAuthenticated()){
-		var citation = JSON.parse(req.body.citation)
-		var io = req.app.get('socketio');
-		var relationship = {}
-		relationship[citation._id] = {relatedResponse: req.body.relatedResponse, relationshipType: req.body.relationshipType};
-		Discussion.findByIdAndUpdate(req.body.discussionId,
-			{$push: {"responses": citation._id, "relationships": relationship, "citations": citation._id}},
-			{safe: true, upsert: true},
-			function (err, foundDiscussion) {
-				if (discussionClients[req.body.discussionId] !== undefined){
-						discussionClients[req.body.discussionId].forEach(function(clientId){
-								io.to(clientId).emit('newCitationResponse', {discussionId: req.body.discussionId, citation: citation, relatedResponse: req.body.relatedResponse});
-						})
+		if (Math.floor((Date.now() - req.user.last_post)/1000) >= 30 || req.user.last_post === undefined){
+			var citation = JSON.parse(req.body.citation)
+			var io = req.app.get('socketio');
+			var relationship = {}
+			relationship[citation._id] = {relatedResponse: req.body.relatedResponse, relationshipType: req.body.relationshipType};
+			Discussion.findByIdAndUpdate(req.body.discussionId,
+				{$push: {"responses": citation._id, "relationships": relationship, "citations": citation._id}},
+				{safe: true, upsert: true},
+				function (err, foundDiscussion) {
+					if (discussionClients[req.body.discussionId] !== undefined){
+							discussionClients[req.body.discussionId].forEach(function(clientId){
+									io.to(clientId).emit('newCitationResponse', {discussionId: req.body.discussionId, citation: citation, relatedResponse: req.body.relatedResponse});
+							})
+					}
+					res.send('OK')
 				}
-				res.send('OK')
-			}
-		);
+			);
+		}
 	}
 })
 
