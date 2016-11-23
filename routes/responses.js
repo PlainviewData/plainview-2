@@ -73,7 +73,6 @@ router.get('/', function(req, res, next) {
 	Response.find({'$or': [
 		{'title': {'$regex': req.query.response_query}},
 		{'text': {'$regex': req.query.response_query}},
-		{'tags': {'$regex': req.query.response_query}},
 	]}, function(err, foundResponses){
 		if (req.apiQuery){
 			res.json({responses: foundResponses});

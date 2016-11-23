@@ -6,6 +6,7 @@ var Discussion = require('../models/discussion');
 var Account = require('../models/account');
 var Response = require('../models/response');
 var responseTitle = require('../models/responseTitle');
+var Tag = require('../models/tag');
 
 router.get('/', function(req, res, next) {
 	if (res.apiQuery){
@@ -72,14 +73,16 @@ router.post('/', function(req, res, next) {
 		var relationship = {}
 		relationship[newResponse._id.toString()] = {relatedResponse: "", relationshipType: "root"};
 
+		var tags = req.body.tags.split(" ");
+
 		var newDiscussion = new Discussion({
-			title: req.body.discussionTitle,
-			tags: req.body.tags,
+			title: req.body.responseTitle,
+			tags: tags,
 			public: req.body.visibility == 'public',
 			created_by: req.user.first_name + " " + req.user.last_name,
 			responses: [newResponse._id],
 			relationships: [relationship],
-			participants: [req.user._id]
+			participants: [req.user._id],
 		});
 
 		newResponse.original_discussion = newDiscussion._id;
@@ -89,6 +92,7 @@ router.post('/', function(req, res, next) {
 					res.redirect('/discussions/id/' + newDiscussion._id);
 				});
 		});
+		
 		responseTitle.find({title: req.body.responseTitle}, function(err, foundResponse, num){
 			if (foundResponse !== undefined && foundResponse.length === 0){
 				var newResponseTitle = new responseTitle({
@@ -101,6 +105,24 @@ router.post('/', function(req, res, next) {
 			{$push: {'discussions': newDiscussion.id, 'responses': newResponse._id}}, 
 			{safe: true, upsert: true}, function(err, foundAccount){}
 		)
+		tags.forEach(function(tag){
+			Tag.findOne({label: tag}, function(err, tagFound){
+				if (tagFound === null){
+					var newTag = new Tag({
+						label: tag,
+						discussions_using: 1
+					});
+					newTag.save(function(err, savedTag){
+						console.log(savedTag);
+					});
+				} else {
+					tagFound.discussions_using = tagFound.discussions_using + 1;
+					console.log(tagFound);
+					tagFound.save();
+				}
+			})
+		})
+
 	} else {
 		res.render('login');
 	}

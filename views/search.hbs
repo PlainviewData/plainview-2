@@ -1,0 +1,52 @@
+<div class="container">
+	<ol class="breadcrumb">
+	  <li><a href="/responses">Responses</a></li>
+	  <li><a href="/responses/{{response_query}}">{{response_query}}</a></li>
+	</ol>
+	<h2>{{title}}</h2>
+
+	{{#if discussions}}
+		<h2>Discussions with tag "{{this.response_query}}"</h2>
+		<div class="list-group">
+		{{#each discussions}}
+			<h5 class="list-group-item-heading"><a href="/" class="list-group-item list-group-item-action">{{this.title}}</a></h5>
+			<p class="list-group-item-text">{{this.responses.length}} replies</p>
+		{{/each}}
+		</div>
+	{{/if}}
+
+	{{#if responses}}
+		<h2>Responses containing the keyword "{{this.response_query}}"</h2>
+		<div class="row">
+			{{#each responses}}
+				<div class="col-sm-6 col-md-4">
+					<div class="thumbnail responseTile">
+						<div class="caption">
+							<div class="pull-right dropdown">
+								<a href="#" data-toggle="dropdown" class="dropdown-toggle"><span class="glyphicon glyphicon-option-vertical responseTileDropdown"></span></a>
+								<ul class="dropdown-menu dropdown-menu-right">
+									<li><a href="../responses/id/{{this._id}}">View information</a></li>
+									<li class="clipboardDropdown" data-clipboard-text="{{this._id}}" style="cursor: hand"><a>Copy reference id</a></li>
+									<li><a href="../discussions/id/{{this.original_discussion}}">Go to original discussion</a></li>
+								</ul>
+							</div>
+							<h5 class="responseSampleTitle"><b>{{this.title}}</b></h5>
+							</br>
+							<p style=" display: block; /* Fallback for non-webkit */
+						  display: -webkit-box;
+						  max-width: 100%;
+						  height: 14px*1.5*3; /* Fallback for non-webkit */
+						  margin: 0 auto;
+						  font-size: 14px;
+						  line-height: 1.5;
+						  -webkit-line-clamp: 5;
+						  -webkit-box-orient: vertical;
+						  overflow: hidden;
+						  text-overflow: ellipsis;">{{this.text}}</p>
+						</div>
+					</div>
+				</div>
+			{{/each}}
+		</div>
+	{{/if}}
+</div>

@@ -1,0 +1,15 @@
+<div class="container">
+	<ol class="breadcrumb">
+	  <li><a href="/responses">Responses</a></li>
+	  <li><a href="/responses/{{response_query}}">{{response_query}}</a></li>
+	</ol>
+	<h2>{{tag}} - {{num}} results</h2>
+	<div class="row">
+	{{#each discussions}}
+		<ul>
+			<li><a href="/discussions/id/{{this._id}}">{{this.title}}</a></li>
+		</ul>
+	{{/each}}
+
+	</div>
+</div>

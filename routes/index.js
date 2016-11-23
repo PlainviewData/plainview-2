@@ -6,6 +6,7 @@ var passport = require('passport');
 var Discussion = require('../models/discussion');
 var Response = require('../models/response');
 var Account = require('../models/account');
+var Tag = require('../models/tag');
 
 router.get('/', function(req, res, next) {
 	Response.find({}, function(err, result, count){
@@ -18,7 +19,12 @@ router.get('/index', function(req, res, next){
 			.sort({'created_on': -1})
 			.limit(30)
 			.exec(function(err, responses){
-				res.render('index', {responses: responses, user: req.user});
+				Tag.find()
+				.sort({'discussions_using': -1})
+				.limit(10)
+				.exec(function(err, foundTags){
+					res.render('index', {responses: responses, user: req.user, tags: foundTags});
+				})
 			})
 })
 
@@ -43,6 +49,19 @@ router.post('/register', function(req, res, next){
 		}
 	});
 });
+
+router.get('/search', function(req, res, next){
+	Response.find({'$or': [
+		{'title': {'$regex': req.query.response_query}},
+		{'text': {'$regex': req.query.response_query}},
+	]}, function(err, foundResponses){
+			Discussion.find({'tags': req.query.response_query}, function(err, foundDiscussions){
+				res.render('search', {responses: foundResponses, discussions: foundDiscussions, user: req.user, response_query: req.query.response_query});
+			})
+		}
+	)
+
+})
 
 router.get('/logout', function(req, res) {
 	req.logout();

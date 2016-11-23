@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 
 module.exports = mongoose.model('Discussion', new Schema({
 	tags: String,
+	title: String,
 	created_by: String,
 	created_on: { type: Date, default: Date.now },
 	public: Boolean,

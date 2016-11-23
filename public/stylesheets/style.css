@@ -46,14 +46,6 @@
   padding-left: 6px;
 }
 
-.list-group-item{
-    border-left: 0 none;
-    border-right: 0 none;
-    border-bottom: 0 none;
-    padding-bottom: 20px;
-    padding-top: 20px;
-}
-
 #infoPanelHeading {
   word-wrap: break-word;
   word-break: break-all;
