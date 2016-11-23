@@ -31,7 +31,7 @@
 								</ul>
 							</div>
 							<h5 class="responseSampleTitle"><b>{{this.title}}</b></h5>
-							<h7 style="font-size: 12px;"><a href="users/{{this.created_by}}">{{this.signature}}</a></h7>
+							<h7 style="font-size: 12px;"><a href="users/{{this.created_by}}">{{this.created_by}}</a></h7>
 							</br>
 							<p style="
 								display: block;
@@ -55,7 +55,7 @@
 			<div class="list-group">
 				{{#each tags}}
 					{{#if this.label}}
-						<h5 class="list-group-item-heading"><a href="/tags/{{this.label}}" class="list-group-item list-group-item-action">{{this.label}} - {{this.discussions_using}} discussions</a></h5>
+						<h5 class="list-group-item-heading"><a href="/search?response_query={{this.label}}" class="list-group-item list-group-item-action">{{this.label}} - {{this.discussions_using}} discussions</a></h5>
 					{{/if}}
 				{{/each}}
 			</div>

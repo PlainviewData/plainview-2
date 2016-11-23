@@ -299,7 +299,11 @@ $(document).ready(function() {
 						}
 					},
 					error: function(err){
-						notify("warning", "Reply didn't go through. Please try again later", "glyphicon glyphicon-alert");
+						if (err.status === 400){
+							notify("warning", "You must be signed in to reply to this conversation", "glyphicon glyphicon-alert");							
+						} else {
+							notify("warning", "Reply didn't go through. Please try again later", "glyphicon glyphicon-alert");
+						}
 					}
 				})		
 			}

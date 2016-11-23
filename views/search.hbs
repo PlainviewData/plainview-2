@@ -9,7 +9,7 @@
 		<h2>Discussions with tag "{{this.response_query}}"</h2>
 		<div class="list-group">
 		{{#each discussions}}
-			<p class="list-group-item-heading"><a href="/discussions/id/{{this._id}}" class="list-group-item list-group-item-action">{{this.title}} - {{this.signature}} - {{this.responses.length}} replies</a></p>
+			<p class="list-group-item-heading"><a href="/discussions/id/{{this._id}}" class="list-group-item list-group-item-action">{{this.title}} - {{this.created_by}} - {{this.responses.length}} replies</a></p>
 		{{/each}}
 		</div>
 	{{/if}}
@@ -32,7 +32,7 @@
 								</ul>
 							</div>
 							<h5 class="responseSampleTitle"><b>{{this.title}}</b></h5>
-							<h7 style="font-size: 12px;"><a href="users/{{this.created_by}}">{{this.signature}}</a></h7>
+							<h7 style="font-size: 12px;"><a href="users/{{this.created_by}}">{{this.created_by}}</a></h7>
 							</br>
 							<p style="
 								display: block;

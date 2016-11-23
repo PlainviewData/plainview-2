@@ -39,6 +39,7 @@ router.post('/register', function(req, res, next){
 		username: req.body.username,
 	})
 	Account.register(newAccount, req.body.password, function(err, account) {
+		console.log(account)
 		if (err) {
 			console.log(err)
 			res.redirect(req.header('Referer'));
@@ -69,7 +70,7 @@ router.get('/search', function(req, res, next){
 
 router.get('/logout', function(req, res) {
 	req.logout();
-	res.redirect("/");
+	res.redirect(req.header('Referer'));
 });
 
 router.get('/ping', function(req, res){
@@ -77,7 +78,7 @@ router.get('/ping', function(req, res){
 });
 
 router.get('/profile', function(req, res, next){
-	if (req.user){
+	if (req.isAuthenticated()){
 		Account.findOne({_id: req.user._id}, function(err, foundAccount){
 			Response.find({
 				'_id': { $in: foundAccount.responses}

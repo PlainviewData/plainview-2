@@ -13,21 +13,21 @@ router.get('/demouser', function(req,res,next){
 })
 
 router.get('/:user_id', function(req, res, next) {
-	Account.findOne({_id: req.params.user_id}, function(err, foundAccount){
+	Account.findOne({slug: req.params.user_id}, function(err, foundAccount){
 		if (foundAccount){
-			if (req.user && ''+req.user._id == ''+foundAccount._id) {
-				res.redirect('/profile');
-			} else {
-				Response.find({
-					'_id': { $in: foundAccount.responses}
-				}, function (err, foundResponses) {
-					Discussion.find({
-						'_id': { $in: foundAccount.discussions}
-					}, function (err, foundDiscussions) {
-						res.render('users', {user: req.user, discussions: foundDiscussions, responses: foundResponses});
-					});
+			Response.find({
+				'_id': { $in: foundAccount.responses}
+			}, function (err, foundResponses) {
+				Discussion.find({
+					'_id': { $in: foundAccount.discussions}
+				}, function (err, foundDiscussions) {
+					if (req.isAuthenticated() && ''+req.user._id == ''+foundAccount._id) {
+						res.render('profile', {user: req.user, discussions: foundDiscussions, responses: foundResponses});
+					} else {
+						res.render('users', {user: foundAccount, discussions: foundDiscussions, responses: foundResponses});
+					}
 				});
-			}
+			});
 		} else {
 			next();
 		}
