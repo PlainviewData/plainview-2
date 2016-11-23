@@ -65,6 +65,7 @@ router.post('/', function(req, res, next) {
 });
 
 router.get('/', function(req, res, next) {
+	req.query.response_query = undefined || "";
 	Response.find({'$or': [
 		{'title': {'$regex': req.query.response_query}},
 		{'text': {'$regex': req.query.response_query}},
