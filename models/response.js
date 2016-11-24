@@ -7,5 +7,7 @@ module.exports = mongoose.model('Block', new Schema({
 	created_by: String,
 	signature: String,
 	created_on: { type: Date, default: Date.now },
-	original_discussion: Schema.Types.ObjectId
+	original_discussion: Schema.Types.ObjectId,
+	public: Boolean,
+	discussion_root: Boolean
 }));

@@ -10,17 +10,22 @@ var Tag = require('../models/tag');
 
 router.get('/', function(req, res, next) {
 	if (req.development) {
-		Response.find()
-			.sort({'created_on': -1})
-			.limit(30)
-			.exec(function(err, responses){
-				Tag.find()
-				.sort({'discussions_using': -1})
-				.limit(10)
-				.exec(function(err, foundTags){
-					res.render('index', {responses: responses, user: req.user, tags: foundTags});
-				})
+		Response.find({
+			$and: [
+				{ 'discussion_root': true},
+				{ 'public': true }
+			]
+		})
+		.sort({'created_on': -1})
+		.limit(30)
+		.exec(function(err, responses){
+			Tag.find()
+			.sort({'discussions_using': -1})
+			.limit(10)
+			.exec(function(err, foundTags){
+				res.render('index', {responses: responses, user: req.user, tags: foundTags});
 			})
+		})
 	} else {
 		res.sendFile('public/pres.html', {'root': __dirname+"/../"})
 	}
@@ -50,21 +55,24 @@ router.post('/register', function(req, res, next){
 });
 
 router.get('/search', function(req, res, next){
-	Response.find({'$or': [
-				{'title': {'$regex': req.query.response_query, "$options": "i" }},
-				{'text': {'$regex': req.query.response_query, "$options": "i" }},
-			]})
-			.sort({'created_on': -1})
-			.limit(30)
-			.exec(function(err, foundResponses){
-				if (req.query.response_query){
-					Discussion.find({'tags': new RegExp("^" + req.query.response_query.toLowerCase(), "i")}, function(err, foundDiscussions){
-						res.render('search', {responses: foundResponses, discussions: foundDiscussions, user: req.user, response_query: req.query.response_query});
-					})
-				} else {
-						res.render('search', {responses: foundResponses, user: req.user, response_query: req.query.response_query});				
-				}
-			});
+	Response.find({
+		$and: [
+			{ $or: [{'title': {'$regex': req.query.response_query, "$options": "i" }},
+					{'text': {'$regex': req.query.response_query, "$options": "i" }}] },
+			{ 'public': true }
+		]
+	})
+	.sort({'created_on': -1})
+	.limit(30)
+	.exec(function(err, foundResponses){
+		if (req.query.response_query){
+			Discussion.find({'tags': new RegExp("^" + req.query.response_query.toLowerCase(), "i")}, function(err, foundDiscussions){
+				res.render('search', {responses: foundResponses, discussions: foundDiscussions, user: req.user, response_query: req.query.response_query});
+			})
+		} else {
+				res.render('search', {responses: foundResponses, user: req.user, response_query: req.query.response_query});				
+		}
+	});
 })
 
 router.get('/logout', function(req, res) {
@@ -80,7 +88,7 @@ router.get('/profile', function(req, res, next){
 	if (req.isAuthenticated()){
 		Account.findOne({_id: req.user._id}, function(err, foundAccount){
 			Response.find({
-				'_id': { $in: foundAccount.responses}
+				'_id': { $in: foundAccount.responses},
 			}, function (err, foundResponses) {
 				Discussion.find({
 					'_id': { $in: foundAccount.discussions}

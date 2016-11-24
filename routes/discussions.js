@@ -70,6 +70,8 @@ router.post('/', function(req, res, next) {
 				title: req.body.responseTitle,
 				text: req.body.responseText,
 				created_by: req.user.username,
+				public: req.body.visibility == "public",
+				discussion_root: true
 			});
 
 			var relationship = {}
@@ -80,7 +82,7 @@ router.post('/', function(req, res, next) {
 			var newDiscussion = new Discussion({
 				title: req.body.responseTitle,
 				tags: tags,
-				public: true,
+				public: req.user.visibility == "public",
 				created_by: req.user.username,
 				responses: [newResponse._id],
 				relationships: [relationship],

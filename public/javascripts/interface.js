@@ -24,8 +24,7 @@ var discussion;
 
 $(document).ready(function() {
 
-	var lastFocus
-	;
+	var lastFocus;
 
 	document.addEventListener('focus',function(e){lastFocus = e.target.id}, true);
 
