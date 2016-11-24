@@ -14,6 +14,7 @@ router.get('/demouser', function(req,res,next){
 
 router.get('/:user_id', function(req, res, next) {
 	Account.findOne({slug: req.params.user_id}, function(err, foundAccount){
+		console.log(foundAccount)
 		if (foundAccount){
 			Response.find({
 				'_id': { $in: foundAccount.responses}

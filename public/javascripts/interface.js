@@ -23,7 +23,11 @@ var responses;
 var discussion;
 
 $(document).ready(function() {
-	
+
+	var lastFocus;
+
+	document.addEventListener('focus',function(e){lastFocus = e.target.id}, true);
+
 	var currentDiscussionId = $( ".discussionId" ).attr('id');
 
 	var socket = io();
@@ -79,7 +83,6 @@ $(document).ready(function() {
 					writtenReply : ""
 				} 
 			}
-			console.log(discussion.relationships)
 			var relationshipType = discussion.relationships.filter(function(relationship){  return relationship[response._id] !== undefined })[0][response._id].relationshipType;
 			if (discussion.citations.indexOf(response._id) !== -1){
 				g.setNode("n"+response._id, { style: "stroke: #4286f4; stroke-width: 0.5px", id: "n"+response._id, labelType: 'html', label: compiledResponseTemplate({templateData : {displayed: "none", dataPersistence: states[response._id].dataPersistence, response: response, class: "citationResponse", responseTypeColor: 'black'}}), class: "unselected-node "});
@@ -175,6 +178,10 @@ $(document).ready(function() {
 
 			d3.select("svg g").call(render, g);
 
+			if (lastFocus){
+				document.getElementById("#"+lastFocus).focus();
+			}
+
 
 			svg.selectAll(".node").on('mousedown', function(){
 				if (mouseMovement){
@@ -198,20 +205,26 @@ $(document).ready(function() {
 				
 				var response = $.grep(responses, function(e){ return e._id == id; })[0];
 
-				var newResponse = {};
-				$.each($('#'+form).serializeArray(), function(i, field) {
-					newResponse[field.name] = field.value;
-				});
-				addResponseToDiscussion(newResponse, id, false, function(){
-					switchReplyView("n"+id);
-					renderGraph();
-				});
-				$("#r"+id).val("")
-				$("#t"+id).val("")
-				states[id].dataPersistence = {
-					writtenTitle : "",
-					writtenReply : ""
-				} 
+				if ($("#t"+id).val().length < 5){
+					notify("warning", "Titles should be at least 5 characters", "glyphicon glyphicon-alert");
+				} else if ($("#r"+id).val().length < 30){
+					notify("warning", "Replies should be at least 30 characters", "glyphicon glyphicon-alert");
+				} else {
+					var newResponse = {};
+					$.each($('#'+form).serializeArray(), function(i, field) {
+						newResponse[field.name] = field.value;
+					});
+					addResponseToDiscussion(newResponse, id, false, function(){
+						switchReplyView("n"+id);
+						renderGraph();
+					});
+					$("#r"+id).val("")
+					$("#t"+id).val("")
+					states[id].dataPersistence = {
+						writtenTitle : "",
+						writtenReply : ""
+					} 
+				}
 			})
 
 			svg.selectAll('.reply-button').on('click',function(e){
@@ -230,7 +243,6 @@ $(document).ready(function() {
 		}
 		
 		function addNewNode(response, relatedResponse, responseClass){
-			console.log(response, relatedResponse)
 			states[response._id] = "";
 			responses.push(response);
 			states[response._id] = {
