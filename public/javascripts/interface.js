@@ -178,7 +178,7 @@ $(document).ready(function() {
 
 			d3.select("svg g").call(render, g);
 
-			if (lastFocus){
+			if (document.getElementById("#"+lastFocus)){
 				document.getElementById("#"+lastFocus).focus();
 			}
 
