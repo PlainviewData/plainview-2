@@ -179,7 +179,12 @@ $(document).ready(function() {
 			d3.select("svg g").call(render, g);
 
 			if (document.getElementById("#"+lastFocus)){
-				document.getElementById("#"+lastFocus).focus();
+				console.log("it exists")
+				document.getElementById("#"+lastFocus).focus(function(){
+					console.log("dasdsa")
+				});
+			} else {
+				console.log("it doesnt exist")
 			}
 
 
