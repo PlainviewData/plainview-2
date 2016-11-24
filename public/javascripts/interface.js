@@ -24,7 +24,8 @@ var discussion;
 
 $(document).ready(function() {
 
-	var lastFocus;
+	var lastFocus
+	;
 
 	document.addEventListener('focus',function(e){lastFocus = e.target.id}, true);
 
@@ -139,6 +140,10 @@ $(document).ready(function() {
 
 		renderGraph(g);
 		renderGraph(g);
+		console.log("#"+lastFocus);
+		// document.getElementById("#"+lastFocus).focus(function(){
+		// 		console.log("dasdsa")
+		// });
 		
 		function renderGraph(){
 
@@ -178,15 +183,21 @@ $(document).ready(function() {
 
 			d3.select("svg g").call(render, g);
 
-			if (document.getElementById("#"+lastFocus)){
-				console.log("it exists")
-				document.getElementById("#"+lastFocus).focus(function(){
-					console.log("dasdsa")
-				});
-			} else {
-				console.log("it doesnt exist")
+			if (lastFocus){
+				var temp = $('#'+lastFocus).val();
+				$('#'+lastFocus).val('').val(temp).focus();
 			}
 
+			// if (document.getElementById("#"+lastFocus)){
+			// 	console.log("it exists")
+			// 	document.getElementById("#"+lastFocus).focus(function(){
+			// 		console.log("dasdsa")
+			// 	});
+			// } else {
+			// 	console.log(lastFocus);
+			// 	console.log(document.getElementById("#"+lastFocus))
+			// 	console.log("it doesnt exist")
+			// }
 
 			svg.selectAll(".node").on('mousedown', function(){
 				if (mouseMovement){
