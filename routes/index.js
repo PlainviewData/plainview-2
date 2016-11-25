@@ -10,24 +10,24 @@ var Tag = require('../models/tag');
 
 router.get('/', function(req, res, next) {
 	// if (req.development) {
-	Response.find({
-		$and: [
-			{ 'discussion_root': true},
-			{ 'public': true }
-		]
-	})
-	.sort({'created_on': -1})
-	.limit(30)
-	.exec(function(err, responses){
-		Tag.find()
-		.sort({'discussions_using': -1})
-		.limit(10)
-		.exec(function(err, foundTags){
-			res.render('index', {responses: responses, user: req.user, tags: foundTags});
-		})
-	})
+	// Response.find({
+	// 	$and: [
+	// 		{ 'discussion_root': true},
+	// 		{ 'public': true }
+	// 	]
+	// })
+	// .sort({'created_on': -1})
+	// .limit(30)
+	// .exec(function(err, responses){
+	// 	Tag.find()
+	// 	.sort({'discussions_using': -1})
+	// 	.limit(10)
+	// 	.exec(function(err, foundTags){
+	// 		res.render('index', {responses: responses, user: req.user, tags: foundTags});
+	// 	})
+	// })
 	// } else {
-	// 	res.sendFile('public/pres.html', {'root': __dirname+"/../"})
+		res.sendFile('public/pres.html', {'root': __dirname+"/../"})
 	// }
 });
 
@@ -106,7 +106,7 @@ router.get('/profile', function(req, res, next){
 	}
 })
 
-router.get('/home', function(req, res, next){
+router.get('/demo', function(req, res,next){
 	var sampleResponse1 = new Response({
 		title: "Here's a message",
 		text: "Click and drag to shift the discussion and use the scroll wheel to zoom. Try writing a few replies.",
@@ -148,6 +148,66 @@ router.get('/home', function(req, res, next){
 			})
 		})
 	  })
+})
+
+router.get('/home', function(req, res, next){
+	// var sampleResponse1 = new Response({
+	// 	title: "Here's a message",
+	// 	text: "Click and drag to shift the discussion and use the scroll wheel to zoom. Try writing a few replies.",
+	// 	created_by: "Daniel",
+	// 	public: false
+	//   });
+	//   var sampleResponse2 = new Response({
+	// 	title: "You can start a new discussion",
+	// 	text: "Click on the plus sign on the top right of the screen to start a new discussion. Share the link with a friend to discuss together live.",
+	// 	created_by: "Striped Rhino",
+	// 	public: false
+	//   });
+	//   var sampleResponse3 = new Response({
+	// 	title: "Try replying by citing a response",
+	// 	text: "You can cite existing responses as a reply. Click reply, click the browse button, and cite a response.",
+	// 	created_by: "Striped Rhino",
+	// 	public: false
+	//   });
+	//   var relationship1 = {};
+	//   var relationship2 = {};
+	//   var relationship3 = {};
+	//   relationship1[sampleResponse1._id] = {relatedResponse: "", relationshipType: 'root'};
+	//   relationship2[sampleResponse2._id] = {relatedResponse: sampleResponse1._id, relationshipType: 'dissent'};
+	//   relationship3[sampleResponse3._id] = {relatedResponse: sampleResponse1._id, relationshipType: 'dissent'};
+	//   var sampleDiscussion = new Discussion({
+	// 	responses: [sampleResponse1._id, sampleResponse2._id, sampleResponse3._id],
+	// 	citations: [],
+	// 	created_by: "demo",
+	// 	relationships: [relationship1, relationship2, relationship3],
+	// 	public: false
+	//   });
+
+	//   sampleResponse1.save(function(err, savedres1){
+	// 	sampleResponse2.save(function(err, savedres2){
+	// 		sampleResponse3.save(function(err, savedres3){
+	// 			sampleDiscussion.save(function(err, savedDisc){
+	// 				res.redirect('/discussions/id/' + savedDisc._id);
+	// 			})
+	// 		})
+	// 	})
+	//   })
+	Response.find({
+			$and: [
+				{ 'discussion_root': true},
+				{ 'public': true }
+			]
+		})
+		.sort({'created_on': -1})
+		.limit(30)
+		.exec(function(err, responses){
+			Tag.find()
+			.sort({'discussions_using': -1})
+			.limit(10)
+			.exec(function(err, foundTags){
+				res.render('index', {responses: responses, user: req.user, tags: foundTags});
+			})
+		})
 })
 
 module.exports = router;
