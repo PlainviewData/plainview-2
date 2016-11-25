@@ -9,26 +9,26 @@ var Account = require('../models/account');
 var Tag = require('../models/tag');
 
 router.get('/', function(req, res, next) {
-	if (req.development) {
-		Response.find({
-			$and: [
-				{ 'discussion_root': true},
-				{ 'public': true }
-			]
+	// if (req.development) {
+	Response.find({
+		$and: [
+			{ 'discussion_root': true},
+			{ 'public': true }
+		]
+	})
+	.sort({'created_on': -1})
+	.limit(30)
+	.exec(function(err, responses){
+		Tag.find()
+		.sort({'discussions_using': -1})
+		.limit(10)
+		.exec(function(err, foundTags){
+			res.render('index', {responses: responses, user: req.user, tags: foundTags});
 		})
-		.sort({'created_on': -1})
-		.limit(30)
-		.exec(function(err, responses){
-			Tag.find()
-			.sort({'discussions_using': -1})
-			.limit(10)
-			.exec(function(err, foundTags){
-				res.render('index', {responses: responses, user: req.user, tags: foundTags});
-			})
-		})
-	} else {
-		res.sendFile('public/pres.html', {'root': __dirname+"/../"})
-	}
+	})
+	// } else {
+	// 	res.sendFile('public/pres.html', {'root': __dirname+"/../"})
+	// }
 });
 
 router.post('/login', passport.authenticate('local'), function(req, res) {

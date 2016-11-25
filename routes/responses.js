@@ -64,15 +64,16 @@ router.post('/', function(req, res, next) {
 });
 
 router.get('/', function(req, res, next) {
-	req.query.response_query = undefined || "";
+	req.query.title = req.query.title || "";
+	req.query.text = req.query.text || "";
 	Response.find({
 		$and: [
-			{ $or: [{'title': {'$regex': "", "$options": "i" }},
-					{'text': {'$regex': "", "$options": "i" }}] },
+			{ $and: [{'title': {'$regex': req.query.title, "$options": "i" }},
+					{'text': {'$regex': req.query.text, "$options": "i" }}] },
 			{ 'public': true }
 		]
 	})
-	.limit(10)
+	.limit(30)
 	.exec(function(err, foundResponses){
 		if (req.apiQuery){
 			res.json({responses: foundResponses});

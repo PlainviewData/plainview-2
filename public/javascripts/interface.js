@@ -131,7 +131,7 @@ $(document).ready(function() {
 			fetchResponses(searchQuery);
 		});
 		
-		$('#responses').on('click', '.use-title',function(e){
+		$('#responses').on('click', '.use-title',function(e){return;
 			var idOfClickedResponse = $(e.target).closest('.thumbnail').attr('id');
 			var clickedResponseTitle = $.grep(fetchedResponses, function(e){ return e._id == idOfClickedResponse; })[0]['title'];
 			$('#responseModal').modal('hide');
@@ -391,6 +391,7 @@ function notify(type, message, gylph){
 }
 
 function fetchResponses(searchQuery){
+	console.log(searchQuery)
 	$.ajax({
 		type: "GET",
 		url: "../../api/responses",
