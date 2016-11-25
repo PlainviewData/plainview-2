@@ -13,6 +13,7 @@ router.get('/demouser', function(req,res,next){
 })
 
 router.get('/:user_id', function(req, res, next) {
+	req.params.user_id = req.params.user_id.toLowerCase();
 	Account.findOne({slug: req.params.user_id}, function(err, foundAccount){
 		console.log(foundAccount)
 		if (foundAccount){

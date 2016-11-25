@@ -85,7 +85,7 @@ $(document).ready(function() {
 			}
 			var relationshipType = discussion.relationships.filter(function(relationship){  return relationship[response._id] !== undefined })[0][response._id].relationshipType;
 			if (discussion.citations.indexOf(response._id) !== -1){
-				g.setNode("n"+response._id, { style: "stroke: #4286f4; stroke-width: 0.5px", id: "n"+response._id, labelType: 'html', label: compiledResponseTemplate({templateData : {displayed: "none", dataPersistence: states[response._id].dataPersistence, response: response, class: "citationResponse", responseTypeColor: 'black'}}), class: "unselected-node "});
+				g.setNode("n"+response._id, { style: "stroke: #f44141; stroke-width: 0.5px", id: "n"+response._id, labelType: 'html', label: compiledResponseTemplate({templateData : {displayed: "none", dataPersistence: states[response._id].dataPersistence, response: response, class: "citationResponse", responseTypeColor: 'black'}}), class: "unselected-node "});
 			} else {
 				g.setNode("n"+response._id, { style: "stroke: #4286f4; stroke-width: 0.5px", id: "n"+response._id, labelType: 'html', label: compiledResponseTemplate({templateData : {displayed: "none", dataPersistence: states[response._id].dataPersistence, response: response, class: "originalResponse", responseTypeColor: 'black'}}), class: "unselected-node"});
 			}
@@ -110,7 +110,6 @@ $(document).ready(function() {
 		$('#responses').on('click', '.cite-response', function(e){
 			var idOfClickedResponse = $(e.target).closest('a').attr('id');
 			var clickedResponse = $.grep(fetchedResponses, function(e){ return e._id == idOfClickedResponse; })[0];
-			console.log(clickedResponse)
 			if ("n"+idOfClickedResponse !== currentResponse){
 				addResponseToDiscussion(clickedResponse, currentResponse.substring(1), true);
 				$('#responseModal').modal('hide');
@@ -140,10 +139,6 @@ $(document).ready(function() {
 
 		renderGraph(g);
 		renderGraph(g);
-		console.log("#"+lastFocus);
-		// document.getElementById("#"+lastFocus).focus(function(){
-		// 		console.log("dasdsa")
-		// });
 		
 		function renderGraph(){
 
@@ -171,7 +166,11 @@ $(document).ready(function() {
 							displayed = "inline-block";
 						}	
 						var response =  $.grep(responses, function(e){ return e._id == responseId; })[0];
-						g.setNode("n"+responseId, { style: "stroke: #3563ad; stroke-width: 0.5px", id: "n"+responseId, labelType: 'html', label: compiledResponseTemplate({templateData : {displayed: displayed, dataPersistence: states[responseId].dataPersistence, response: response, class: "originalResponse", responseTypeColor: 'black'}}), class: "unselected-node"});
+						if (discussion.citations.indexOf(response._id) !== -1){
+							g.setNode("n"+responseId, { style: "stroke: #9d41f4; stroke-width: 0.5px", id: "n"+responseId, labelType: 'html', label: compiledResponseTemplate({templateData : {citationMessage: "Citation: ", displayed: displayed, dataPersistence: states[responseId].dataPersistence, response: response, class: "originalResponse", responseTypeColor: 'black'}}), class: "unselected-node"});
+						} else {
+							g.setNode("n"+responseId, { style: "stroke: #3563ad; stroke-width: 0.5px", id: "n"+responseId, labelType: 'html', label: compiledResponseTemplate({templateData : {displayed: displayed, dataPersistence: states[responseId].dataPersistence, response: response, class: "originalResponse", responseTypeColor: 'black'}}), class: "unselected-node"});			
+						}
 					}
 				}
 			}
@@ -256,7 +255,6 @@ $(document).ready(function() {
 				//console.log(g.node(idOfClickedResponse).class);
 				//g.node(idOfClickedResponse).class = "testsex"
 				switchReplyView(idOfClickedResponse);
-				console.log('rendering 261')
 				renderGraph();
 			});
 		}
@@ -270,14 +268,17 @@ $(document).ready(function() {
 					writtenReply : ""
 				} 
 			}
-			g.setNode("n"+response._id, { style: "stroke: #8a95a8; stroke-width: 0.5px", id: "n"+response._id, labelType: 'html', label: compiledResponseTemplate({templateData : {displayed: "none",  dataPersistence: states[response._id].dataPersistence, response: response, class: "originalResponse", responseTypeColor: 'black'}}), class: "unselected-node"});
+			if (responseClass === "originalResponse"){
+				g.setNode("n"+response._id, { style: "stroke: #8a95a8; stroke-width: 0.5px", id: "n"+response._id, labelType: 'html', label: compiledResponseTemplate({templateData : {displayed: "none",  dataPersistence: states[response._id].dataPersistence, response: response, class: "originalResponse", responseTypeColor: 'black'}}), class: "unselected-node"});
+			} else {
+				g.setNode("n"+response._id, { style: "stroke: #f44141; stroke-width: 0.5px", id: "n"+response._id, labelType: 'html', label: compiledResponseTemplate({templateData : {displayed: "none",  dataPersistence: states[response._id].dataPersistence, response: response, class: "originalResponse", responseTypeColor: 'black'}}), class: "unselected-node"});
+			}
 			
 			g.setEdge("n"+relatedResponse, "n"+response._id, {
 				style: "fill: none;stroke: #0084ff; stroke-width: 0.5px;",
 				arrowhead: 'undirected',
 				//lineInterpolate: 'basis'
 			});
-			console.log('rendering 282')
 			renderGraph();
 			$('#r'+currentResponse).focus();
 
@@ -391,7 +392,6 @@ function notify(type, message, gylph){
 }
 
 function fetchResponses(searchQuery){
-	console.log(searchQuery)
 	$.ajax({
 		type: "GET",
 		url: "../../api/responses",
@@ -405,7 +405,6 @@ function fetchResponses(searchQuery){
 
 
 function loadResponseBrowser(){
-	console.log(fetchedResponses)
 	$("#responses").html(responseBrowser({responses: fetchedResponses}));
 }
 

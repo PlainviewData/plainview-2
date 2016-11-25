@@ -18,9 +18,10 @@ var responseTemplate = `
 				<span data-toggle="tooltip" data-placement="top" title="copy id to clipboard" style="color: grey; cursor: pointer;" class ="urlButton control glyphicon glyphicon-link" data-clipboard-text="<%= templateData.response._id %>"></span>
 			</span>
 			<span style="color: #353535; font-weight: 100; font-family: 'Open Sans', sans-serif;"><a href="/users/<%= templateData.response.created_by %>"><%= templateData.response.created_by %></a></span>
-			<h5 data-toggle="tooltip" data-placement="top" title="see more responses like this" class="responseTitle" style="white-space: pre-line; font-size: 13px; font-weight: 300;" ><a href="../../responses/<%= templateData.response.title %>""><%= templateData.response.title %></a></h5>
+			<h5 data-toggle="tooltip" data-placement="top" title="see more responses like this" class="responseTitle" style="white-space: pre-line; font-size: 13px; font-weight: 300;" ><a href="../../responses/<%= templateData.response.title %>""><%= templateData.citationMessage %><%= templateData.response.title %></a></h5>
 			<div style="color: #353535; white-space: pre-line;">
 				<%= templateData.response.text %>
+				<%= templateData.test %>
 			</div>
 			<button type="button" style="font-size: 8px; text-decoration: none;" class="btn btn-link btn-sm reply-button">Reply</button>
 		</div>
