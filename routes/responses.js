@@ -13,6 +13,7 @@ router.post('/', function(req, res, next) {
 		if (Math.floor((Date.now() - req.user.last_post)/1000) >= 30 || req.user.last_post === undefined){
 			var currentDiscussionId = req.body.discussionId;
 			Discussion.findOne({'_id': currentDiscussionId}, function(err, foundDiscussion){
+				console.log(foundDiscussion.public)
 				var newResponse = new Response({
 					original_discussion: currentDiscussionId,
 					title: req.body.responseTitle,
@@ -64,17 +65,20 @@ router.post('/', function(req, res, next) {
 
 router.get('/', function(req, res, next) {
 	req.query.response_query = undefined || "";
-	Response.find({'public': true},{'$or': [
-		{'title': {'$regex': req.query.response_query}},
-		{'text': {'$regex': req.query.response_query}},
-		]})
-		.limit(10)
-		.exec(function(err, foundResponses){
-			if (req.apiQuery){
-				res.json({responses: foundResponses});
-			} else {
-				res.render('responses', {title: req.params.response_query, responses: foundResponses, user: req.user, response_query: req.query.response_query});
-			}
+	Response.find({
+		$and: [
+			{ $or: [{'title': {'$regex': "", "$options": "i" }},
+					{'text': {'$regex': "", "$options": "i" }}] },
+			{ 'public': true }
+		]
+	})
+	.limit(10)
+	.exec(function(err, foundResponses){
+		if (req.apiQuery){
+			res.json({responses: foundResponses});
+		} else {
+			res.render('responses', {title: req.params.response_query, responses: foundResponses, user: req.user, response_query: req.query.response_query});
+		}
 	})
 });
 

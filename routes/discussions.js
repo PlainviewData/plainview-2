@@ -63,6 +63,7 @@ router.get('/id/:discussion_id([0-9a-f]{24})', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
+	console.log(req.body.visibility == "public")
 	if (req.isAuthenticated()){
 		if (Math.floor((Date.now() - req.user.last_post)/1000) >= 30 || req.user.last_post === undefined){
 			var newResponse = new Response({
@@ -82,7 +83,7 @@ router.post('/', function(req, res, next) {
 			var newDiscussion = new Discussion({
 				title: req.body.responseTitle,
 				tags: tags,
-				public: req.user.visibility == "public",
+				public: req.body.visibility == "public",
 				created_by: req.user.username,
 				responses: [newResponse._id],
 				relationships: [relationship],
@@ -117,11 +118,9 @@ router.post('/', function(req, res, next) {
 							discussions_using: 1
 						});
 						newTag.save(function(err, savedTag){
-							console.log(savedTag);
 						});
 					} else {
 						tagFound.discussions_using = tagFound.discussions_using + 1;
-						console.log(tagFound);
 						tagFound.save();
 					}
 				})
@@ -137,6 +136,7 @@ router.post('/', function(req, res, next) {
 router.post('/addCitationToDiscussion', function(req, res, next){
 	if (req.isAuthenticated()){
 		if (Math.floor((Date.now() - req.user.last_post)/1000) >= 30 || req.user.last_post === undefined){
+			console.log(req.body)
 			var citation = JSON.parse(req.body.citation)
 			var io = req.app.get('socketio');
 			var relationship = {}

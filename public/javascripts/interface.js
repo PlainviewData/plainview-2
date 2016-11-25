@@ -108,8 +108,9 @@ $(document).ready(function() {
 		})
 				
 		$('#responses').on('click', '.cite-response', function(e){
-			var idOfClickedResponse = $(e.target).closest('.thumbnail').attr('id');
+			var idOfClickedResponse = $(e.target).closest('a').attr('id');
 			var clickedResponse = $.grep(fetchedResponses, function(e){ return e._id == idOfClickedResponse; })[0];
+			console.log(clickedResponse)
 			if ("n"+idOfClickedResponse !== currentResponse){
 				addResponseToDiscussion(clickedResponse, currentResponse.substring(1), true);
 				$('#responseModal').modal('hide');
@@ -229,16 +230,18 @@ $(document).ready(function() {
 					$.each($('#'+form).serializeArray(), function(i, field) {
 						newResponse[field.name] = field.value;
 					});
-					addResponseToDiscussion(newResponse, id, false, function(){
-						switchReplyView("n"+id);
-						renderGraph();
-					});
-					$("#r"+id).val("")
-					$("#t"+id).val("")
-					states[id].dataPersistence = {
-						writtenTitle : "",
-						writtenReply : ""
-					} 
+					addResponseToDiscussion(newResponse, id, false, function(success){
+						if (success){
+							switchReplyView("n"+id);
+							renderGraph();
+							$("#r"+id).val("")
+							$("#t"+id).val("")
+							states[id].dataPersistence = {
+								writtenTitle : "",
+								writtenReply : ""
+							}
+						}
+					}); 
 				}
 			})
 
@@ -253,6 +256,7 @@ $(document).ready(function() {
 				//console.log(g.node(idOfClickedResponse).class);
 				//g.node(idOfClickedResponse).class = "testsex"
 				switchReplyView(idOfClickedResponse);
+				console.log('rendering 261')
 				renderGraph();
 			});
 		}
@@ -273,6 +277,7 @@ $(document).ready(function() {
 				arrowhead: 'undirected',
 				//lineInterpolate: 'basis'
 			});
+			console.log('rendering 282')
 			renderGraph();
 			$('#r'+currentResponse).focus();
 
@@ -289,6 +294,9 @@ $(document).ready(function() {
 		function addResponseToDiscussion(newResponseData, relatedResponse, isCitation, cb){
 			if (Math.floor((Date.now() - localStorage.getItem("last_post"))/1000) <= 30 && localStorage.getItem("last_post") !== null) {
 				notify("warning", "Please wait 30 seconds after your last post", "glyphicon glyphicon-alert");
+				if (cb){
+					cb(false);
+				}
 				return;
 			}
 			if (isCitation){
@@ -305,7 +313,7 @@ $(document).ready(function() {
 						notify("success", "Replied to conversation", "glyphicon glyphicon-ok-circle");
 						localStorage.setItem("last_post", Date.now());
 						if (cb){
-							cb();
+							cb(true);
 						}
 					},
 					error: function(err){
@@ -315,6 +323,9 @@ $(document).ready(function() {
 							notify("warning", "Please wait 30 seconds after your last post", "glyphicon glyphicon-alert");
 						} else {
 							notify("warning", "Reply didn't go through. Please try again later", "glyphicon glyphicon-alert");
+						}
+						if (cb){
+							cb(false);
 						}
 					}
 				})
@@ -334,7 +345,7 @@ $(document).ready(function() {
 						notify("success", "Replied to conversation", "glyphicon glyphicon-ok-circle");
 						localStorage.setItem("last_post", Date.now());
 						if (cb){
-							cb();
+							cb(false);
 						}
 					},
 					error: function(err){
@@ -344,6 +355,9 @@ $(document).ready(function() {
 							notify("warning", "Please wait 30 seconds after your last post", "glyphicon glyphicon-alert");
 						} else {
 							notify("warning", "Reply didn't go through. Please try again later", "glyphicon glyphicon-alert");
+						}
+						if (cb){
+							cb(false);
 						}
 					}
 				})		
@@ -382,7 +396,7 @@ function fetchResponses(searchQuery){
 		url: "../../api/responses",
 		data: searchQuery,
 		success: function(data){
-			fetchedResponses = data;
+			fetchedResponses = data.responses;
 			loadResponseBrowser();
 		}
 	})
@@ -390,6 +404,7 @@ function fetchResponses(searchQuery){
 
 
 function loadResponseBrowser(){
+	console.log(fetchedResponses)
 	$("#responses").html(responseBrowser({responses: fetchedResponses}));
 }
 

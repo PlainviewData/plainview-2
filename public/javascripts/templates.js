@@ -1,8 +1,12 @@
 var responseBrowserTemplate = `
+<div class="list-group">
 <% _.each(responses, function(response){ %>
-<%= response.text %>
-
+     <a href="#" id="<%= response._id %>" class="list-group-item list-group-item-action cite-response" style="overflow:hidden; text-overflow:ellipsis;">
+	    <h5 class="list-group-item-heading"><b><%= response.title %></b></h5>
+	    <p class="list-group-item-text"><%= response.text %></p>
+	 </a>
 <% }); %>
+</div>
       `
 var responseBrowser = _.template(responseBrowserTemplate);
 
