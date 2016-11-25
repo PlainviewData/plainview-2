@@ -31,9 +31,9 @@ router.get('/', function(req, res, next) {
 	// }
 });
 
-router.get('/home', function(req, res, next){
-	res.sendFile('public/pres.html', {'root': __dirname+"/../"});
-})
+// router.get('/home', function(req, res, next){
+// 	res.sendFile('public/pres.html', {'root': __dirname+"/../"});
+// })
 
 router.post('/login', passport.authenticate('local'), function(req, res) {
 	res.redirect(req.header('Referer'));
@@ -106,21 +106,24 @@ router.get('/profile', function(req, res, next){
 	}
 })
 
-router.get('/demo', function(req, res, next){
+router.get('/home', function(req, res, next){
 	var sampleResponse1 = new Response({
 		title: "Here's a message",
 		text: "Click and drag to shift the discussion and use the scroll wheel to zoom. Try writing a few replies.",
 		created_by: "Daniel",
+		public: false
 	  });
 	  var sampleResponse2 = new Response({
 		title: "You can start a new discussion",
 		text: "Click on the plus sign on the top right of the screen to start a new discussion. Share the link with a friend to discuss together live.",
 		created_by: "Striped Rhino",
+		public: false
 	  });
 	  var sampleResponse3 = new Response({
 		title: "Try replying by citing a response",
 		text: "You can cite existing responses as a reply. Click reply, click the browse button, and cite a response.",
 		created_by: "Striped Rhino",
+		public: false
 	  });
 	  var relationship1 = {};
 	  var relationship2 = {};
@@ -131,7 +134,8 @@ router.get('/demo', function(req, res, next){
 	  var sampleDiscussion = new Discussion({
 		responses: [sampleResponse1._id, sampleResponse2._id, sampleResponse3._id],
 		citations: [],
-		relationships: [relationship1, relationship2, relationship3]
+		relationships: [relationship1, relationship2, relationship3],
+		public: false
 	  });
 
 	  sampleResponse1.save(function(err, savedres1){
