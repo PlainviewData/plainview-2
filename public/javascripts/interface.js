@@ -346,7 +346,7 @@ $(document).ready(function() {
 						notify("success", "Replied to conversation", "glyphicon glyphicon-ok-circle");
 						localStorage.setItem("last_post", Date.now());
 						if (cb){
-							cb(false);
+							cb(true);
 						}
 					},
 					error: function(err){
