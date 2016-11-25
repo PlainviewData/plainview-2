@@ -29,7 +29,7 @@ router.get('/id/:discussion_id([0-9a-f]{24})', function(req, res, next) {
 	var discussionId = mongoose.Types.ObjectId(req.params.discussion_id.toString());
 	Discussion.findById(discussionId, function (err, foundDiscussion) {
 		if (foundDiscussion) {
-			if (foundDiscussion.public === false){
+			if (foundDiscussion.public === false && foundDiscussion.created_by !== "demo"){
 				if (req.isAuthenticated()){
 					if (foundDiscussion.participants.indexOf(req.user._id) !== -1){
 						Response.find({

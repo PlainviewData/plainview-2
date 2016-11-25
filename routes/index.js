@@ -134,6 +134,7 @@ router.get('/home', function(req, res, next){
 	  var sampleDiscussion = new Discussion({
 		responses: [sampleResponse1._id, sampleResponse2._id, sampleResponse3._id],
 		citations: [],
+		created_by: "demo",
 		relationships: [relationship1, relationship2, relationship3],
 		public: false
 	  });
