@@ -59,7 +59,7 @@
                         <a class="page-scroll" href="#team">Team</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="/discussions/new">Demo <i class="fa fa-comment" aria-hidden="true"></i>
+                        <a class="page-scroll" href="/">Demo <i class="fa fa-comment" aria-hidden="true"></i>
 </a>
                     </li>
                 </ul>
@@ -84,7 +84,7 @@
                                     <h1>Plainview</h1>
                                     <p>Conversation <span style="color:#c98028">Unbounded</span></p>
                                     </br>
-                                    <a href="/discussions/id/5823f9c6d692c20012628d85" class="btn btn-outline btn-xl page-scroll">Try our prototype<i class="fa fa-comment" aria-hidden="true"></i>
+                                    <a href="/" class="btn btn-outline btn-xl page-scroll">Try our prototype<i class="fa fa-comment" aria-hidden="true"></i>
         </a>
                                     </br></br></br>
                                     <p>Plainview creates discussion experiences that emphasize ideation and expression over conventional chronology</p>
