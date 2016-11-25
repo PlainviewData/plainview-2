@@ -31,6 +31,10 @@ router.get('/', function(req, res, next) {
 	// }
 });
 
+router.get('/home', function(req, res, next){
+	res.sendFile('public/pres.html', {'root': __dirname+"/../"});
+})
+
 router.post('/login', passport.authenticate('local'), function(req, res) {
 	res.redirect(req.header('Referer'));
 });
