@@ -293,7 +293,11 @@ $(document).ready(function() {
 			}
 
 		function addResponseToDiscussion(newResponseData, relatedResponse, isCitation, cb){
-			if (Math.floor((Date.now() - localStorage.getItem("last_post"))/1000) <= 30 && localStorage.getItem("last_post") !== null) {
+			var demo = false;
+			if (discussion.created_by == "demo"){
+				demo  = true;
+			}
+			if (demo === false && Math.floor((Date.now() - localStorage.getItem("last_post"))/1000) <= 30 && localStorage.getItem("last_post") !== null) {
 				notify("warning", "Please wait 30 seconds after your last post", "glyphicon glyphicon-alert");
 				if (cb){
 					cb(false);
@@ -308,6 +312,7 @@ $(document).ready(function() {
 						discussionId: currentDiscussionId,
 						citation: JSON.stringify(newResponseData),
 						relatedResponse: relatedResponse,
+						demo: demo,
 						relationshipType: 'dissent' //replace
 					},
 					success: function(){
@@ -339,6 +344,7 @@ $(document).ready(function() {
 						responseTitle: newResponseData['title'],
 						responseText: newResponseData['text'],
 						created_by: "Striped Rhino",
+						demo: demo,
 						relatedResponse: relatedResponse,
 						relationshipType: 'dissent' //replace
 					},

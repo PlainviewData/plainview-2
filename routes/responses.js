@@ -13,7 +13,6 @@ router.post('/', function(req, res, next) {
 		if (Math.floor((Date.now() - req.user.last_post)/1000) >= 30 || req.user.last_post === undefined){
 			var currentDiscussionId = req.body.discussionId;
 			Discussion.findOne({'_id': currentDiscussionId}, function(err, foundDiscussion){
-				console.log(foundDiscussion.public)
 				var newResponse = new Response({
 					original_discussion: currentDiscussionId,
 					title: req.body.responseTitle,
@@ -58,6 +57,37 @@ router.post('/', function(req, res, next) {
 		} else {
 			res.send(429);
 		}
+	} else if (req.body.demo){
+		var currentDiscussionId = req.body.discussionId;
+		Discussion.findOne({'_id': currentDiscussionId}, function(err, foundDiscussion){
+			var newResponse = new Response({
+				original_discussion: currentDiscussionId,
+				title: req.body.responseTitle,
+				text: req.body.responseText,
+				created_by: "demo",
+				discussion_root: false,
+				public: false
+			});
+			newResponse.save(function(err, savedResponse){
+				var relationship = {}
+				var io = req.app.get('socketio');
+				relationship[savedResponse.id] = {relatedResponse: req.body.relatedResponse, relationshipType: req.body.relationshipType};
+				foundDiscussion.responses.push(savedResponse._id);
+				foundDiscussion.relationships.push(relationship);
+				foundDiscussion.save(function(err, savedDiscussion){
+					if (req.apiQuery){
+						res.redirect('api/discussions/id/' + currentDiscussionId);
+					} else {
+						if (discussionClients[currentDiscussionId] !== undefined){
+							discussionClients[currentDiscussionId].forEach(function(clientId){
+									io.to(clientId).emit('newOriginalResponse', {discussionId: currentDiscussionId, newResponse: newResponse, relatedResponse: req.body.relatedResponse});
+							})
+						}
+						res.send('OK')
+					}
+				});
+			})
+		})
 	} else {
 		res.send(400);
 	}

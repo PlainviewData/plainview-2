@@ -11,6 +11,10 @@
   color: white;
 }*/
 
+.hidden_submit {
+  display: none;
+}
+
 .twitter-typeahead, .tt-hint, .tt-input, .tt-menu { width: 85%; }
 
 #jumbotron-link {

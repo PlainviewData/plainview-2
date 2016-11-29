@@ -143,6 +143,7 @@ router.get('/demo', function(req, res,next){
 		sampleResponse2.save(function(err, savedres2){
 			sampleResponse3.save(function(err, savedres3){
 				sampleDiscussion.save(function(err, savedDisc){
+					req.demo = true;
 					res.redirect('/discussions/id/' + savedDisc._id);
 				})
 			})
