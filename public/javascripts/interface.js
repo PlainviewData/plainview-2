@@ -22,6 +22,31 @@ var argumentsToRespondTo = []; //an array of arguments the user is planning to r
 var responses;
 var discussion;
 
+class stateData {
+	constructor(writtenTitle, writtenText) {
+		this.dataPersistence = {
+			writtenTitle: writtenTitle,
+			writtenText: writtenText
+		}
+
+		this.setTitleAndText = function(writtenTitle, writtenText){
+			this.dataPersistence = {
+				writtenTitle: writtenTitle,
+				writtenText: writtenText
+			}
+		}
+
+		this.setTitle = function(writtenTitle){
+			this.dataPersistence.writtenTitle = writtenTitle
+		}
+
+		this.setText = function(writtenText){
+			this.dataPersistence.writtenText = writtenText
+		}
+
+	}
+}
+
 $(document).ready(function() {
 
 	var lastFocus;
@@ -77,13 +102,8 @@ $(document).ready(function() {
 	function tryDraw(responses, discussion){
 		var states = {};
 		responses.forEach(function(response){
-			states[response._id] = {
-				dataPersistence : {
-					writtenTitle : "",
-					writtenReply : ""
-				} 
-			}
-			var relationshipType = discussion.relationships.filter(function(relationship){  return relationship[response._id] !== undefined })[0][response._id].relationshipType;
+			states[response._id] = new stateData("", "");
+			var relationshipType = discussion.relationships.filter(function(relationship){ return relationship[response._id] !== undefined })[0][response._id].relationshipType;
 			if (discussion.citations.indexOf(response._id) !== -1){
 				g.setNode("n"+response._id, { style: "stroke: #f44141; stroke-width: 0.5px", id: "n"+response._id, labelType: 'html', label: compiledResponseTemplate({templateData : {displayed: "none", dataPersistence: states[response._id].dataPersistence, response: response, class: "citationResponse", responseTypeColor: 'black'}}), class: "unselected-node "});
 			} else {
@@ -149,10 +169,10 @@ $(document).ready(function() {
 			g.nodes().forEach(function saveState(nodeId){
 				var id = nodeId.substring(1);
 				if ($("#t"+id).val() !== undefined && $("#t"+id).val() !== ""){
-					states[id].dataPersistence.writtenTitle = $("#t"+id).val();
+					states[id].setTitle($("#t"+id).val());
 				}
 				if ($("#r"+id).val() !== undefined && $("#r"+id).val() !== ""){
-					states[id].dataPersistence.writtenReply = $("#r"+id).val();
+					states[id].setText($("#r"+id).val());
 				}
 			})
 
@@ -235,10 +255,7 @@ $(document).ready(function() {
 							renderGraph();
 							$("#r"+id).val("")
 							$("#t"+id).val("")
-							states[id].dataPersistence = {
-								writtenTitle : "",
-								writtenReply : ""
-							}
+							states[id].setTitleAndText("","");
 						}
 					}); 
 				}
@@ -262,12 +279,7 @@ $(document).ready(function() {
 		function addNewNode(response, relatedResponse, responseClass){
 			states[response._id] = "";
 			responses.push(response);
-			states[response._id] = {
-				dataPersistence : {
-					writtenTitle : "",
-					writtenReply : ""
-				} 
-			}
+			states[response._id].setTitleAndText("","");
 			if (responseClass === "originalResponse"){
 				g.setNode("n"+response._id, { style: "stroke: #8a95a8; stroke-width: 0.5px", id: "n"+response._id, labelType: 'html', label: compiledResponseTemplate({templateData : {displayed: "none",  dataPersistence: states[response._id].dataPersistence, response: response, class: "originalResponse", responseTypeColor: 'black'}}), class: "unselected-node"});
 			} else {
